@@ -1,2 +1,1 @@
-@import "@inventory-app/ui/globals.css";
-@source "../node_modules/streamdown/dist/*.js";
+@import "./ui/styles/globals.css";

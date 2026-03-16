@@ -1,8 +1,8 @@
 import { devToolsMiddleware } from "@ai-sdk/devtools";
 import { google } from "@ai-sdk/google";
 import fastifyCors from "@fastify/cors";
-import { auth } from "@inventory-app/auth";
-import { env } from "@inventory-app/env/server";
+import { auth } from "@/auth";
+import { env } from "@/env";
 import { streamText, type UIMessage, convertToModelMessages, wrapLanguageModel } from "ai";
 import Fastify from "fastify";
 

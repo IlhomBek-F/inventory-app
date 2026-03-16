@@ -7,24 +7,30 @@
     "check-types": "tsc -b",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.mjs"
+    "start": "node dist/index.mjs",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@ai-sdk/devtools": "^0.0.2",
     "@ai-sdk/google": "^3.0.1",
     "@fastify/cors": "^11.0.1",
-    "@inventory-app/auth": "workspace:*",
-    "@inventory-app/db": "workspace:*",
-    "@inventory-app/env": "workspace:*",
+    "@sinclair/typebox": "^0.34.48",
+    "@t3-oss/env-core": "^0.13.1",
     "ai": "catalog:",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
+    "drizzle-orm": "^0.45.1",
     "fastify": "^5.3.3",
+    "pg": "^8.17.1",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@inventory-app/config": "workspace:*",
     "@types/node": "catalog:",
+    "@types/pg": "^8.16.0",
+    "drizzle-kit": "^0.31.8",
     "tsdown": "^0.16.5",
     "tsx": "^4.19.2",
     "typescript": "^5"
