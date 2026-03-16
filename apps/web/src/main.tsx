@@ -2,12 +2,10 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 
 import { routeTree } from "./routeTree.gen";
-import { Loader } from "lucide-react";
 
 const router = createRouter({
   routeTree,
   defaultPreload: "intent",
-  defaultPendingComponent: () => <Loader />,
   context: {},
 });
 

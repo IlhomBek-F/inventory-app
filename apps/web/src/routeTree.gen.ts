@@ -9,38 +9,154 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShoesIndexRouteImport } from './routes/shoes/index'
+import { Route as ShoesNewRouteImport } from './routes/shoes/new'
+import { Route as ShoesShoeIdIndexRouteImport } from './routes/shoes/$shoeId/index'
+import { Route as ShoesShoeIdEditRouteImport } from './routes/shoes/$shoeId/edit'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShoesIndexRoute = ShoesIndexRouteImport.update({
+  id: '/shoes/',
+  path: '/shoes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShoesNewRoute = ShoesNewRouteImport.update({
+  id: '/shoes/new',
+  path: '/shoes/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShoesShoeIdIndexRoute = ShoesShoeIdIndexRouteImport.update({
+  id: '/shoes/$shoeId/',
+  path: '/shoes/$shoeId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShoesShoeIdEditRoute = ShoesShoeIdEditRouteImport.update({
+  id: '/shoes/$shoeId/edit',
+  path: '/shoes/$shoeId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/shoes/new': typeof ShoesNewRoute
+  '/shoes/': typeof ShoesIndexRoute
+  '/shoes/$shoeId/edit': typeof ShoesShoeIdEditRoute
+  '/shoes/$shoeId/': typeof ShoesShoeIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/shoes/new': typeof ShoesNewRoute
+  '/shoes': typeof ShoesIndexRoute
+  '/shoes/$shoeId/edit': typeof ShoesShoeIdEditRoute
+  '/shoes/$shoeId': typeof ShoesShoeIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/shoes/new': typeof ShoesNewRoute
+  '/shoes/': typeof ShoesIndexRoute
+  '/shoes/$shoeId/edit': typeof ShoesShoeIdEditRoute
+  '/shoes/$shoeId/': typeof ShoesShoeIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/shoes/new'
+    | '/shoes/'
+    | '/shoes/$shoeId/edit'
+    | '/shoes/$shoeId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/shoes/new'
+    | '/shoes'
+    | '/shoes/$shoeId/edit'
+    | '/shoes/$shoeId'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/shoes/new'
+    | '/shoes/'
+    | '/shoes/$shoeId/edit'
+    | '/shoes/$shoeId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  ShoesNewRoute: typeof ShoesNewRoute
+  ShoesIndexRoute: typeof ShoesIndexRoute
+  ShoesShoeIdEditRoute: typeof ShoesShoeIdEditRoute
+  ShoesShoeIdIndexRoute: typeof ShoesShoeIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +164,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shoes/': {
+      id: '/shoes/'
+      path: '/shoes'
+      fullPath: '/shoes/'
+      preLoaderRoute: typeof ShoesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shoes/new': {
+      id: '/shoes/new'
+      path: '/shoes/new'
+      fullPath: '/shoes/new'
+      preLoaderRoute: typeof ShoesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shoes/$shoeId/': {
+      id: '/shoes/$shoeId/'
+      path: '/shoes/$shoeId'
+      fullPath: '/shoes/$shoeId/'
+      preLoaderRoute: typeof ShoesShoeIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shoes/$shoeId/edit': {
+      id: '/shoes/$shoeId/edit'
+      path: '/shoes/$shoeId/edit'
+      fullPath: '/shoes/$shoeId/edit'
+      preLoaderRoute: typeof ShoesShoeIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  ShoesNewRoute: ShoesNewRoute,
+  ShoesIndexRoute: ShoesIndexRoute,
+  ShoesShoeIdEditRoute: ShoesShoeIdEditRoute,
+  ShoesShoeIdIndexRoute: ShoesShoeIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
