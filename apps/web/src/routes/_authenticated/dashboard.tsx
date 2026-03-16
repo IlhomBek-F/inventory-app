@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Package, Warehouse, DollarSign, AlertTriangle, Plus, Eye, ArrowDown, ArrowUp, RefreshCw } from "lucide-react";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import ShoeForm, { type ShoeFormData } from "@/components/shoe-form";
 
-export const Route = createFileRoute("/shoes/$shoeId/edit")({
+export const Route = createFileRoute("/_authenticated/shoes/$shoeId/edit")({
   component: EditShoePage,
 });
 

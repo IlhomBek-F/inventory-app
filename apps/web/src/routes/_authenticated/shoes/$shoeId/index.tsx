@@ -11,8 +11,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { ArrowLeft, Plus, Pencil, Trash2, Save } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "@tanstack/react-form";
 
-export const Route = createFileRoute("/shoes/$shoeId/")({
+export const Route = createFileRoute("/_authenticated/shoes/$shoeId/")({
   component: ShoeDetailPage,
 });
 
@@ -55,22 +56,21 @@ const movementTypes = [
 function ShoeDetailPage() {
   const { shoeId } = Route.useParams();
   const [showMovementDialog, setShowMovementDialog] = useState(false);
-  const [movementType, setMovementType] = useState("in");
-  const [movementQty, setMovementQty] = useState("");
-  const [movementReason, setMovementReason] = useState("");
 
   const isLowStock = mockShoe.quantity <= mockShoe.minStockAlert;
   const isOutOfStock = mockShoe.quantity === 0;
   const profit = mockShoe.sellPrice - mockShoe.costPrice;
   const margin = ((profit / mockShoe.sellPrice) * 100).toFixed(1);
 
-  const handleAddMovement = () => {
-    // TODO: POST to API
-    console.log("Adding movement:", { shoeId, type: movementType, quantity: Number(movementQty), reason: movementReason });
-    setShowMovementDialog(false);
-    setMovementQty("");
-    setMovementReason("");
-  };
+  const movementForm = useForm({
+    defaultValues: { type: "in", quantity: 0, reason: "" },
+    onSubmit: ({ value }) => {
+      // TODO: POST to API
+      console.log("Adding movement:", { shoeId, ...value });
+      setShowMovementDialog(false);
+      movementForm.reset();
+    },
+  });
 
   return (
     <div className="flex flex-col gap-3 max-w-4xl mx-auto">
@@ -218,29 +218,42 @@ function ShoeDetailPage() {
           <DialogHeader>
             <DialogTitle className="text-base">Record Stock Movement</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1.5">
-              <Label>Movement Type</Label>
-              <Select value={movementType} onValueChange={setMovementType}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {movementTypes.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label>Quantity</Label>
-              <Input type="number" min={1} value={movementQty} onChange={(e) => setMovementQty(e.target.value)} />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label>Reason</Label>
-              <Textarea value={movementReason} onChange={(e) => setMovementReason(e.target.value)} rows={2} />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setShowMovementDialog(false)}>Cancel</Button>
-            <Button size="sm" onClick={handleAddMovement}><Save className="size-3.5" /> Save</Button>
-          </DialogFooter>
+          <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); movementForm.handleSubmit(); }} className="flex flex-col gap-3">
+            <movementForm.Field name="type">
+              {(field) => (
+                <div className="flex flex-col gap-1.5">
+                  <Label>Movement Type</Label>
+                  <Select value={field.state.value} onValueChange={(v) => field.handleChange(v)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {movementTypes.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </movementForm.Field>
+            <movementForm.Field name="quantity" validators={{ onChange: ({ value }) => value < 1 ? "Min 1" : undefined }}>
+              {(field) => (
+                <div className="flex flex-col gap-1.5">
+                  <Label>Quantity</Label>
+                  <Input type="number" min={1} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
+                  {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+                </div>
+              )}
+            </movementForm.Field>
+            <movementForm.Field name="reason">
+              {(field) => (
+                <div className="flex flex-col gap-1.5">
+                  <Label>Reason</Label>
+                  <Textarea value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} rows={2} />
+                </div>
+              )}
+            </movementForm.Field>
+            <DialogFooter>
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowMovementDialog(false)}>Cancel</Button>
+              <Button type="submit" size="sm"><Save className="size-3.5" /> Save</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Download, Search, Eye, Pencil, Trash2, ArrowUpDown } from "lucide-react";
 import { useState, useMemo } from "react";
 
-export const Route = createFileRoute("/shoes/")({
+export const Route = createFileRoute("/_authenticated/shoes/")({
   component: ShoesListPage,
 });
 

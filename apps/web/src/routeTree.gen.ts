@@ -9,28 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ShoesIndexRouteImport } from './routes/shoes/index'
-import { Route as ShoesNewRouteImport } from './routes/shoes/new'
-import { Route as ShoesShoeIdIndexRouteImport } from './routes/shoes/$shoeId/index'
-import { Route as ShoesShoeIdEditRouteImport } from './routes/shoes/$shoeId/edit'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedShoesIndexRouteImport } from './routes/_authenticated/shoes/index'
+import { Route as AuthRegisterIndexRouteImport } from './routes/_auth/register/index'
+import { Route as AuthLoginIndexRouteImport } from './routes/_auth/login/index'
+import { Route as AuthenticatedShoesNewRouteImport } from './routes/_authenticated/shoes/new'
+import { Route as AuthenticatedShoesShoeIdIndexRouteImport } from './routes/_authenticated/shoes/$shoeId/index'
+import { Route as AuthenticatedShoesShoeIdEditRouteImport } from './routes/_authenticated/shoes/$shoeId/edit'
 
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -38,66 +33,85 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ShoesIndexRoute = ShoesIndexRouteImport.update({
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedShoesIndexRoute = AuthenticatedShoesIndexRouteImport.update({
   id: '/shoes/',
   path: '/shoes/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
-const ShoesNewRoute = ShoesNewRouteImport.update({
+const AuthRegisterIndexRoute = AuthRegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthenticatedShoesNewRoute = AuthenticatedShoesNewRouteImport.update({
   id: '/shoes/new',
   path: '/shoes/new',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
-const ShoesShoeIdIndexRoute = ShoesShoeIdIndexRouteImport.update({
-  id: '/shoes/$shoeId/',
-  path: '/shoes/$shoeId/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShoesShoeIdEditRoute = ShoesShoeIdEditRouteImport.update({
-  id: '/shoes/$shoeId/edit',
-  path: '/shoes/$shoeId/edit',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedShoesShoeIdIndexRoute =
+  AuthenticatedShoesShoeIdIndexRouteImport.update({
+    id: '/shoes/$shoeId/',
+    path: '/shoes/$shoeId/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedShoesShoeIdEditRoute =
+  AuthenticatedShoesShoeIdEditRouteImport.update({
+    id: '/shoes/$shoeId/edit',
+    path: '/shoes/$shoeId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/shoes/new': typeof ShoesNewRoute
-  '/shoes/': typeof ShoesIndexRoute
-  '/shoes/$shoeId/edit': typeof ShoesShoeIdEditRoute
-  '/shoes/$shoeId/': typeof ShoesShoeIdIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/shoes/new': typeof AuthenticatedShoesNewRoute
+  '/login/': typeof AuthLoginIndexRoute
+  '/register/': typeof AuthRegisterIndexRoute
+  '/shoes/': typeof AuthenticatedShoesIndexRoute
+  '/shoes/$shoeId/edit': typeof AuthenticatedShoesShoeIdEditRoute
+  '/shoes/$shoeId/': typeof AuthenticatedShoesShoeIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/shoes/new': typeof ShoesNewRoute
-  '/shoes': typeof ShoesIndexRoute
-  '/shoes/$shoeId/edit': typeof ShoesShoeIdEditRoute
-  '/shoes/$shoeId': typeof ShoesShoeIdIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/shoes/new': typeof AuthenticatedShoesNewRoute
+  '/login': typeof AuthLoginIndexRoute
+  '/register': typeof AuthRegisterIndexRoute
+  '/shoes': typeof AuthenticatedShoesIndexRoute
+  '/shoes/$shoeId/edit': typeof AuthenticatedShoesShoeIdEditRoute
+  '/shoes/$shoeId': typeof AuthenticatedShoesShoeIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
-  '/shoes/new': typeof ShoesNewRoute
-  '/shoes/': typeof ShoesIndexRoute
-  '/shoes/$shoeId/edit': typeof ShoesShoeIdEditRoute
-  '/shoes/$shoeId/': typeof ShoesShoeIdIndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/shoes/new': typeof AuthenticatedShoesNewRoute
+  '/_auth/login/': typeof AuthLoginIndexRoute
+  '/_auth/register/': typeof AuthRegisterIndexRoute
+  '/_authenticated/shoes/': typeof AuthenticatedShoesIndexRoute
+  '/_authenticated/shoes/$shoeId/edit': typeof AuthenticatedShoesShoeIdEditRoute
+  '/_authenticated/shoes/$shoeId/': typeof AuthenticatedShoesShoeIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/login'
-    | '/register'
     | '/shoes/new'
+    | '/login/'
+    | '/register/'
     | '/shoes/'
     | '/shoes/$shoeId/edit'
     | '/shoes/$shoeId/'
@@ -105,56 +119,46 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/shoes/new'
     | '/login'
     | '/register'
-    | '/shoes/new'
     | '/shoes'
     | '/shoes/$shoeId/edit'
     | '/shoes/$shoeId'
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
-    | '/login'
-    | '/register'
-    | '/shoes/new'
-    | '/shoes/'
-    | '/shoes/$shoeId/edit'
-    | '/shoes/$shoeId/'
+    | '/_auth'
+    | '/_authenticated'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/shoes/new'
+    | '/_auth/login/'
+    | '/_auth/register/'
+    | '/_authenticated/shoes/'
+    | '/_authenticated/shoes/$shoeId/edit'
+    | '/_authenticated/shoes/$shoeId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
-  LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
-  ShoesNewRoute: typeof ShoesNewRoute
-  ShoesIndexRoute: typeof ShoesIndexRoute
-  ShoesShoeIdEditRoute: typeof ShoesShoeIdEditRoute
-  ShoesShoeIdIndexRoute: typeof ShoesShoeIdIndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -164,46 +168,94 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/shoes/': {
-      id: '/shoes/'
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/shoes/': {
+      id: '/_authenticated/shoes/'
       path: '/shoes'
       fullPath: '/shoes/'
-      preLoaderRoute: typeof ShoesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedShoesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/shoes/new': {
-      id: '/shoes/new'
+    '/_auth/register/': {
+      id: '/_auth/register/'
+      path: '/register'
+      fullPath: '/register/'
+      preLoaderRoute: typeof AuthRegisterIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/login/': {
+      id: '/_auth/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof AuthLoginIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_authenticated/shoes/new': {
+      id: '/_authenticated/shoes/new'
       path: '/shoes/new'
       fullPath: '/shoes/new'
-      preLoaderRoute: typeof ShoesNewRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedShoesNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/shoes/$shoeId/': {
-      id: '/shoes/$shoeId/'
+    '/_authenticated/shoes/$shoeId/': {
+      id: '/_authenticated/shoes/$shoeId/'
       path: '/shoes/$shoeId'
       fullPath: '/shoes/$shoeId/'
-      preLoaderRoute: typeof ShoesShoeIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedShoesShoeIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/shoes/$shoeId/edit': {
-      id: '/shoes/$shoeId/edit'
+    '/_authenticated/shoes/$shoeId/edit': {
+      id: '/_authenticated/shoes/$shoeId/edit'
       path: '/shoes/$shoeId/edit'
       fullPath: '/shoes/$shoeId/edit'
-      preLoaderRoute: typeof ShoesShoeIdEditRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedShoesShoeIdEditRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
+interface AuthRouteChildren {
+  AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthRegisterIndexRoute: AuthRegisterIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedShoesNewRoute: typeof AuthenticatedShoesNewRoute
+  AuthenticatedShoesIndexRoute: typeof AuthenticatedShoesIndexRoute
+  AuthenticatedShoesShoeIdEditRoute: typeof AuthenticatedShoesShoeIdEditRoute
+  AuthenticatedShoesShoeIdIndexRoute: typeof AuthenticatedShoesShoeIdIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedShoesNewRoute: AuthenticatedShoesNewRoute,
+  AuthenticatedShoesIndexRoute: AuthenticatedShoesIndexRoute,
+  AuthenticatedShoesShoeIdEditRoute: AuthenticatedShoesShoeIdEditRoute,
+  AuthenticatedShoesShoeIdIndexRoute: AuthenticatedShoesShoeIdIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
-  LoginRoute: LoginRoute,
-  RegisterRoute: RegisterRoute,
-  ShoesNewRoute: ShoesNewRoute,
-  ShoesIndexRoute: ShoesIndexRoute,
-  ShoesShoeIdEditRoute: ShoesShoeIdEditRoute,
-  ShoesShoeIdIndexRoute: ShoesShoeIdIndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
