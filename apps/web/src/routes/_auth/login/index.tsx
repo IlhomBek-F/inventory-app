@@ -7,6 +7,7 @@ import { LogIn, Loader2 } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { loginSchema } from "@/lib/schemas";
 
 export const Route = createFileRoute("/_auth/login/")({
   component: LoginPage,
@@ -18,6 +19,9 @@ function LoginPage() {
 
   const form = useForm({
     defaultValues: { email: "", password: "" },
+    validators: {
+      onChange: loginSchema,
+    },
     onSubmit: async ({ value }) => {
       setLoading(true);
 
@@ -55,10 +59,6 @@ function LoginPage() {
       >
         <form.Field
           name="email"
-          validators={{
-            onChange: ({ value }) =>
-              !value ? "Email is required" : undefined,
-          }}
         >
           {(field) => (
             <div className="flex flex-col gap-1.5">
@@ -73,7 +73,7 @@ function LoginPage() {
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-xs text-destructive">
-                  {field.state.meta.errors[0]}
+                  {field.state.meta.errors[0]?.message}
                 </p>
               )}
             </div>
@@ -82,10 +82,6 @@ function LoginPage() {
 
         <form.Field
           name="password"
-          validators={{
-            onChange: ({ value }) =>
-              !value ? "Password is required" : undefined,
-          }}
         >
           {(field) => (
             <div className="flex flex-col gap-1.5">
@@ -108,7 +104,7 @@ function LoginPage() {
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-xs text-destructive">
-                  {field.state.meta.errors[0]}
+                  {field.state.meta.errors[0]?.message}
                 </p>
               )}
             </div>

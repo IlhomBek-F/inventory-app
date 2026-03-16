@@ -5,25 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Save, X, Loader2 } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
+import { shoeSchema, type ShoeFormData } from "@/lib/schemas";
 
-export interface ShoeFormData {
-  name: string;
-  brand: string;
-  category: string;
-  size: string;
-  color: string;
-  condition: string;
-  sku: string;
-  barcode: string;
-  description: string;
-  imageUrl: string;
-  costPrice: number;
-  sellPrice: number;
-  quantity: number;
-  minStockAlert: number;
-  supplier: string;
-  location: string;
-}
+export type { ShoeFormData };
 
 const emptyShoe: ShoeFormData = {
   name: "",
@@ -62,6 +46,9 @@ interface ShoeFormProps {
 export default function ShoeForm({ initialData, onSubmit, loading, submitLabel = "Save" }: ShoeFormProps) {
   const form = useForm({
     defaultValues: { ...emptyShoe, ...initialData } as ShoeFormData,
+    validators: {
+      onChange: shoeSchema,
+    },
     onSubmit: ({ value }) => {
       onSubmit(value);
     },
@@ -76,27 +63,27 @@ export default function ShoeForm({ initialData, onSubmit, loading, submitLabel =
       }}
       className="grid grid-cols-1 md:grid-cols-2 gap-3"
     >
-      <form.Field name="name" validators={{ onChange: ({ value }) => !value ? "Name is required" : undefined }}>
+      <form.Field name="name">
         {(field) => (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="name">Name *</Label>
             <Input id="name" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
-            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
           </div>
         )}
       </form.Field>
 
-      <form.Field name="brand" validators={{ onChange: ({ value }) => !value ? "Brand is required" : undefined }}>
+      <form.Field name="brand">
         {(field) => (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="brand">Brand *</Label>
             <Input id="brand" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
-            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
           </div>
         )}
       </form.Field>
 
-      <form.Field name="category" validators={{ onChange: ({ value }) => !value ? "Category is required" : undefined }}>
+      <form.Field name="category">
         {(field) => (
           <div className="flex flex-col gap-1.5">
             <Label>Category *</Label>
@@ -106,12 +93,12 @@ export default function ShoeForm({ initialData, onSubmit, loading, submitLabel =
                 {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
-            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
           </div>
         )}
       </form.Field>
 
-      <form.Field name="size" validators={{ onChange: ({ value }) => !value ? "Size is required" : undefined }}>
+      <form.Field name="size">
         {(field) => (
           <div className="flex flex-col gap-1.5">
             <Label>Size *</Label>
@@ -121,7 +108,7 @@ export default function ShoeForm({ initialData, onSubmit, loading, submitLabel =
                 {sizes.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
             </Select>
-            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
           </div>
         )}
       </form.Field>
@@ -167,32 +154,32 @@ export default function ShoeForm({ initialData, onSubmit, loading, submitLabel =
         )}
       </form.Field>
 
-      <form.Field name="costPrice" validators={{ onChange: ({ value }) => value < 0 ? "Must be positive" : undefined }}>
+      <form.Field name="costPrice">
         {(field) => (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="costPrice">Cost Price *</Label>
             <Input id="costPrice" type="number" min={0} step={0.01} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
-            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
           </div>
         )}
       </form.Field>
 
-      <form.Field name="sellPrice" validators={{ onChange: ({ value }) => value < 0 ? "Must be positive" : undefined }}>
+      <form.Field name="sellPrice">
         {(field) => (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="sellPrice">Sell Price *</Label>
             <Input id="sellPrice" type="number" min={0} step={0.01} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
-            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
           </div>
         )}
       </form.Field>
 
-      <form.Field name="quantity" validators={{ onChange: ({ value }) => value < 0 ? "Must be positive" : undefined }}>
+      <form.Field name="quantity">
         {(field) => (
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="quantity">Quantity *</Label>
             <Input id="quantity" type="number" min={0} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
-            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+            {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
           </div>
         )}
       </form.Field>

@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
     const { data: session } = await authClient.getSession();
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate loading delay
     if (!session) {
       throw redirect({ to: "/login" });
     }

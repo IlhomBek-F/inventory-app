@@ -7,6 +7,7 @@ import { UserPlus, Loader2 } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { registerSchema } from "@/lib/schemas";
 
 export const Route = createFileRoute("/_auth/register/")({
   component: RegisterPage,
@@ -18,6 +19,9 @@ function RegisterPage() {
 
   const form = useForm({
     defaultValues: { name: "", email: "", password: "" },
+    validators: {
+      onChange: registerSchema,
+    },
     onSubmit: async ({ value }) => {
       setLoading(true);
       await authClient.signUp.email(
@@ -60,10 +64,6 @@ function RegisterPage() {
       >
         <form.Field
           name="name"
-          validators={{
-            onChange: ({ value }) =>
-              !value ? "Name is required" : undefined,
-          }}
         >
           {(field) => (
             <div className="flex flex-col gap-1.5">
@@ -77,7 +77,7 @@ function RegisterPage() {
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-xs text-destructive">
-                  {field.state.meta.errors[0]}
+                  {field.state.meta.errors[0]?.message}
                 </p>
               )}
             </div>
@@ -86,10 +86,6 @@ function RegisterPage() {
 
         <form.Field
           name="email"
-          validators={{
-            onChange: ({ value }) =>
-              !value ? "Email is required" : undefined,
-          }}
         >
           {(field) => (
             <div className="flex flex-col gap-1.5">
@@ -104,7 +100,7 @@ function RegisterPage() {
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-xs text-destructive">
-                  {field.state.meta.errors[0]}
+                  {field.state.meta.errors[0]?.message}
                 </p>
               )}
             </div>
@@ -113,10 +109,6 @@ function RegisterPage() {
 
         <form.Field
           name="password"
-          validators={{
-            onChange: ({ value }) =>
-              value.length < 8 ? "Min 8 characters" : undefined,
-          }}
         >
           {(field) => (
             <div className="flex flex-col gap-1.5">
@@ -131,7 +123,7 @@ function RegisterPage() {
               />
               {field.state.meta.errors.length > 0 && (
                 <p className="text-xs text-destructive">
-                  {field.state.meta.errors[0]}
+                  {field.state.meta.errors[0]?.message}
                 </p>
               )}
             </div>

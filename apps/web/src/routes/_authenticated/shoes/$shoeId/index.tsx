@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { ArrowLeft, Plus, Pencil, Trash2, Save } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
+import { movementSchema } from "@/lib/schemas";
 
 export const Route = createFileRoute("/_authenticated/shoes/$shoeId/")({
   component: ShoeDetailPage,
@@ -63,7 +64,10 @@ function ShoeDetailPage() {
   const margin = ((profit / mockShoe.sellPrice) * 100).toFixed(1);
 
   const movementForm = useForm({
-    defaultValues: { type: "in", quantity: 0, reason: "" },
+    defaultValues: { type: "in" as "in" | "out" | "adjustment", quantity: 0, reason: "" },
+    validators: {
+      onChange: movementSchema,
+    },
     onSubmit: ({ value }) => {
       // TODO: POST to API
       console.log("Adding movement:", { shoeId, ...value });
@@ -223,7 +227,7 @@ function ShoeDetailPage() {
               {(field) => (
                 <div className="flex flex-col gap-1.5">
                   <Label>Movement Type</Label>
-                  <Select value={field.state.value} onValueChange={(v) => field.handleChange(v)}>
+                  <Select value={field.state.value} onValueChange={(v) => field.handleChange(v as "in" | "out" | "adjustment")}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {movementTypes.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
@@ -232,12 +236,12 @@ function ShoeDetailPage() {
                 </div>
               )}
             </movementForm.Field>
-            <movementForm.Field name="quantity" validators={{ onChange: ({ value }) => value < 1 ? "Min 1" : undefined }}>
+            <movementForm.Field name="quantity">
               {(field) => (
                 <div className="flex flex-col gap-1.5">
                   <Label>Quantity</Label>
                   <Input type="number" min={1} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
-                  {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]}</p>}
+                  {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
                 </div>
               )}
             </movementForm.Field>
