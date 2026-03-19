@@ -1,81 +1,71 @@
-import { devToolsMiddleware } from "@ai-sdk/devtools";
-import { google } from "@ai-sdk/google";
-import fastifyCors from "@fastify/cors";
-import { auth } from "@/auth";
+import autoload from "@fastify/autoload";
 import { env } from "@/env";
-import { streamText, type UIMessage, convertToModelMessages, wrapLanguageModel } from "ai";
 import Fastify from "fastify";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const baseCorsConfig = {
-  origin: env.CORS_ORIGIN,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  credentials: true,
-  maxAge: 86400,
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const isProduction = env.NODE_ENV === "production";
 
 const fastify = Fastify({
-  logger: true,
+  logger: isProduction
+    ? {
+        level: "info",
+        serializers: {
+          req(request) {
+            return {
+              method: request.method,
+              url: request.url,
+              hostname: request.hostname,
+              remoteAddress: request.ip,
+            };
+          },
+        },
+      }
+    : {
+        level: "debug",
+        transport: {
+          target: "pino-pretty",
+          options: { colorize: true },
+        },
+      },
+  trustProxy: isProduction,
+  requestTimeout: 30_000,
+  bodyLimit: 1_048_576, // 1MB
+  caseSensitive: true,
+  ignoreDuplicateSlashes: true,
+  ignoreTrailingSlash: true,
 });
 
-fastify.register(fastifyCors, baseCorsConfig);
-
-fastify.route({
-  method: ["GET", "POST"],
-  url: "/api/auth/*",
-  async handler(request, reply) {
-    try {
-      const url = new URL(request.url, `http://${request.headers.host}`);
-      const headers = new Headers();
-      Object.entries(request.headers).forEach(([key, value]) => {
-        if (value) headers.append(key, value.toString());
-      });
-      const req = new Request(url.toString(), {
-        method: request.method,
-        headers,
-        body: request.body ? JSON.stringify(request.body) : undefined,
-      });
-      const response = await auth.handler(req);
-      reply.status(response.status);
-      response.headers.forEach((value, key) => reply.header(key, value));
-      reply.send(response.body ? await response.text() : null);
-    } catch (error) {
-      fastify.log.error({ err: error }, "Authentication Error:");
-      reply.status(500).send({
-        error: "Internal authentication error",
-        code: "AUTH_FAILURE",
-      });
-    }
-  },
+// Auto-load plugins (cors, helmet, rate-limit, etc.)
+fastify.register(autoload, {
+  dir: path.join(__dirname, "plugins"),
 });
 
-interface AiRequestBody {
-  id?: string;
-  messages: UIMessage[];
-}
-
-fastify.post("/ai", async function (request) {
-  const { messages } = request.body as AiRequestBody;
-  const model = wrapLanguageModel({
-    model: google("gemini-2.5-flash"),
-    middleware: devToolsMiddleware(),
-  });
-  const result = streamText({
-    model,
-    messages: await convertToModelMessages(messages),
-  });
-
-  return result.toUIMessageStreamResponse();
+// Auto-load routes
+fastify.register(autoload, {
+  dir: path.join(__dirname, "routes"),
 });
 
-fastify.get("/", async () => {
-  return "OK";
-});
-
-fastify.listen({ port: 3000 }, (err) => {
-  if (err) {
+const start = async () => {
+  try {
+    await fastify.listen({ host: env.HOST, port: env.PORT });
+  } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
-  console.log("Server running on port 3000");
-});
+};
+
+// Graceful shutdown
+const gracefulShutdown = async (signal: string) => {
+  fastify.log.info(`Received ${signal}, shutting down gracefully...`);
+  await fastify.close();
+  process.exit(0);
+};
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+
+start();
