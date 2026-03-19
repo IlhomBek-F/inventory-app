@@ -1,14 +1,7 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth-client";
-import {
-  LayoutDashboard,
-  Package,
-  LogOut,
-  Loader2,
-  Warehouse,
-  User,
-} from "lucide-react";
+import { LayoutDashboard, Loader2, LogOut, Package, User, Warehouse } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
@@ -55,7 +48,11 @@ function AuthenticatedLayout() {
             <nav className="flex items-center gap-1">
               <Link to="/dashboard">
                 {({ isActive }) => (
-                  <Button variant={isActive ? "secondary" : "ghost"} size="sm" className="h-8 text-xs">
+                  <Button
+                    variant={isActive ? "secondary" : "ghost"}
+                    size="sm"
+                    className="h-8 text-xs"
+                  >
                     <LayoutDashboard className="size-3.5" />
                     Dashboard
                   </Button>
@@ -63,7 +60,11 @@ function AuthenticatedLayout() {
               </Link>
               <Link to="/shoes">
                 {({ isActive }) => (
-                  <Button variant={isActive ? "secondary" : "ghost"} size="sm" className="h-8 text-xs">
+                  <Button
+                    variant={isActive ? "secondary" : "ghost"}
+                    size="sm"
+                    className="h-8 text-xs"
+                  >
                     <Package className="size-3.5" />
                     Inventory
                   </Button>

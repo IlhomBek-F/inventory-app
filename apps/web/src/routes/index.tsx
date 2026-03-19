@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, BarChart3, History, List, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Package, BarChart3, History, ArrowRight, List } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,

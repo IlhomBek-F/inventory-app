@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import type { FastifyPluginAsync } from "fastify";
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
@@ -7,6 +6,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     url: "/api/auth/*",
     async handler(request, reply) {
       try {
+        const { auth } = request.diScope.cradle;
         const url = new URL(request.url, `http://${request.headers.host}`);
         const headers = new Headers();
         Object.entries(request.headers).forEach(([key, value]) => {
@@ -19,7 +19,9 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
         });
         const response = await auth.handler(req);
         reply.status(response.status);
-        response.headers.forEach((value, key) => reply.header(key, value));
+        response.headers.forEach((value, key) => {
+          reply.header(key, value);
+        });
         reply.send(response.body ? await response.text() : null);
       } catch (error) {
         fastify.log.error({ err: error }, "Authentication Error:");

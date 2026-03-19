@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
+import { BarChart3, History, Loader2, Package, Warehouse } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { Loader2, Package, BarChart3, History, Warehouse } from "lucide-react";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async () => {
@@ -35,9 +35,7 @@ function AuthLayout() {
             ShoeStock
           </Link>
           <div className="mt-16">
-            <h1 className="text-3xl font-bold tracking-tight">
-              Manage your shoe inventory
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight">Manage your shoe inventory</h1>
             <p className="text-muted-foreground mt-2 max-w-sm">
               Track stock, monitor movements, and grow your business with ShoeStock.
             </p>
@@ -63,9 +61,7 @@ function AuthLayout() {
             </div>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">
-          &copy; 2026 ShoeStock. All rights reserved.
-        </p>
+        <p className="text-xs text-muted-foreground">&copy; 2026 ShoeStock. All rights reserved.</p>
       </div>
 
       {/* Right form panel */}

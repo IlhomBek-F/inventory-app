@@ -1,11 +1,11 @@
+import { useForm } from "@tanstack/react-form";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Loader2, LogIn } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { LogIn, Loader2 } from "lucide-react";
-import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { loginSchema } from "@/lib/schemas";
 
@@ -33,7 +33,6 @@ function LoginPage() {
 
       setLoading(false);
       if (error) {
-        console.error(error);
         return;
       }
       navigate({ to: "/dashboard" });
@@ -44,9 +43,7 @@ function LoginPage() {
     <>
       <div className="text-center lg:text-left mb-6">
         <h2 className="text-xl font-semibold">Sign in to your account</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Enter your credentials to continue
-        </p>
+        <p className="text-sm text-muted-foreground mt-1">Enter your credentials to continue</p>
       </div>
 
       <form
@@ -57,9 +54,7 @@ function LoginPage() {
         }}
         className="flex flex-col gap-4"
       >
-        <form.Field
-          name="email"
-        >
+        <form.Field name="email">
           {(field) => (
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email">Email</Label>
@@ -72,17 +67,13 @@ function LoginPage() {
                 placeholder="you@example.com"
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-xs text-destructive">
-                  {field.state.meta.errors[0]?.message}
-                </p>
+                <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>
               )}
             </div>
           )}
         </form.Field>
 
-        <form.Field
-          name="password"
-        >
+        <form.Field name="password">
           {(field) => (
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
@@ -103,9 +94,7 @@ function LoginPage() {
                 placeholder="••••••••"
               />
               {field.state.meta.errors.length > 0 && (
-                <p className="text-xs text-destructive">
-                  {field.state.meta.errors[0]?.message}
-                </p>
+                <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>
               )}
             </div>
           )}
@@ -113,16 +102,8 @@ function LoginPage() {
 
         <form.Subscribe selector={(state) => [state.canSubmit]}>
           {([canSubmit]) => (
-            <Button
-              type="submit"
-              disabled={!canSubmit || loading}
-              className="w-full"
-            >
-              {loading ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <LogIn className="size-4" />
-              )}
+            <Button type="submit" disabled={!canSubmit || loading} className="w-full">
+              {loading ? <Loader2 className="size-4 animate-spin" /> : <LogIn className="size-4" />}
               Sign In
             </Button>
           )}
@@ -138,10 +119,7 @@ function LoginPage() {
 
       <p className="text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
-        <Link
-          to="/register"
-          className="font-medium text-primary hover:underline"
-        >
+        <Link to="/register" className="font-medium text-primary hover:underline">
           Create one
         </Link>
       </p>

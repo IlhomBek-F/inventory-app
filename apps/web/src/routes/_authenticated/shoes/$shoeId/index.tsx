@@ -1,17 +1,36 @@
+import { useForm } from "@tanstack/react-form";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Pencil, Trash2, Save } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "@tanstack/react-form";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { movementSchema } from "@/lib/schemas";
 
 export const Route = createFileRoute("/_authenticated/shoes/$shoeId/")({
@@ -41,11 +60,46 @@ const mockShoe = {
 };
 
 const mockMovements = [
-  { id: "1", type: "in", quantity: 50, reason: "Initial stock", createdAt: "2026-03-01", user: "Admin" },
-  { id: "2", type: "out", quantity: 20, reason: "Store transfer", createdAt: "2026-03-05", user: "Admin" },
-  { id: "3", type: "out", quantity: 15, reason: "Online orders", createdAt: "2026-03-10", user: "Admin" },
-  { id: "4", type: "adjustment", quantity: -3, reason: "Damaged items", createdAt: "2026-03-12", user: "Admin" },
-  { id: "5", type: "out", quantity: 10, reason: "Retail sales", createdAt: "2026-03-15", user: "Admin" },
+  {
+    id: "1",
+    type: "in",
+    quantity: 50,
+    reason: "Initial stock",
+    createdAt: "2026-03-01",
+    user: "Admin",
+  },
+  {
+    id: "2",
+    type: "out",
+    quantity: 20,
+    reason: "Store transfer",
+    createdAt: "2026-03-05",
+    user: "Admin",
+  },
+  {
+    id: "3",
+    type: "out",
+    quantity: 15,
+    reason: "Online orders",
+    createdAt: "2026-03-10",
+    user: "Admin",
+  },
+  {
+    id: "4",
+    type: "adjustment",
+    quantity: -3,
+    reason: "Damaged items",
+    createdAt: "2026-03-12",
+    user: "Admin",
+  },
+  {
+    id: "5",
+    type: "out",
+    quantity: 10,
+    reason: "Retail sales",
+    createdAt: "2026-03-15",
+    user: "Admin",
+  },
 ];
 
 const movementTypes = [
@@ -69,8 +123,6 @@ function ShoeDetailPage() {
       onChange: movementSchema,
     },
     onSubmit: ({ value }) => {
-      // TODO: POST to API
-      console.log("Adding movement:", { shoeId, ...value });
       setShowMovementDialog(false);
       movementForm.reset();
     },
@@ -82,7 +134,9 @@ function ShoeDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/shoes">
-            <Button variant="ghost" size="icon-sm"><ArrowLeft className="size-4" /></Button>
+            <Button variant="ghost" size="icon-sm">
+              <ArrowLeft className="size-4" />
+            </Button>
           </Link>
           <h1 className="text-lg font-bold">{mockShoe.name}</h1>
           <Badge variant={isOutOfStock ? "destructive" : isLowStock ? "warning" : "success"}>
@@ -95,9 +149,13 @@ function ShoeDetailPage() {
             Movement
           </Button>
           <Link to="/shoes/$shoeId/edit" params={{ shoeId }}>
-            <Button size="sm" variant="outline"><Pencil className="size-3.5" /> Edit</Button>
+            <Button size="sm" variant="outline">
+              <Pencil className="size-3.5" /> Edit
+            </Button>
           </Link>
-          <Button size="sm" variant="destructive"><Trash2 className="size-3.5" /> Delete</Button>
+          <Button size="sm" variant="destructive">
+            <Trash2 className="size-3.5" /> Delete
+          </Button>
         </div>
       </div>
 
@@ -109,15 +167,42 @@ function ShoeDetailPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-y-2 gap-x-6 text-sm">
-              <div><span className="text-muted-foreground">Brand</span><div className="font-medium">{mockShoe.brand}</div></div>
-              <div><span className="text-muted-foreground">Category</span><div className="font-medium">{mockShoe.category}</div></div>
-              <div><span className="text-muted-foreground">Size</span><div className="font-medium">{mockShoe.size}</div></div>
-              <div><span className="text-muted-foreground">Color</span><div className="font-medium">{mockShoe.color}</div></div>
-              <div><span className="text-muted-foreground">Condition</span><div className="font-medium">{mockShoe.condition}</div></div>
-              <div><span className="text-muted-foreground">SKU</span><div className="font-medium">{mockShoe.sku}</div></div>
-              <div><span className="text-muted-foreground">Barcode</span><div className="font-medium">{mockShoe.barcode}</div></div>
-              <div><span className="text-muted-foreground">Supplier</span><div className="font-medium">{mockShoe.supplier}</div></div>
-              <div><span className="text-muted-foreground">Location</span><div className="font-medium">{mockShoe.location}</div></div>
+              <div>
+                <span className="text-muted-foreground">Brand</span>
+                <div className="font-medium">{mockShoe.brand}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Category</span>
+                <div className="font-medium">{mockShoe.category}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Size</span>
+                <div className="font-medium">{mockShoe.size}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Color</span>
+                <div className="font-medium">{mockShoe.color}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Condition</span>
+                <div className="font-medium">{mockShoe.condition}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">SKU</span>
+                <div className="font-medium">{mockShoe.sku}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Barcode</span>
+                <div className="font-medium">{mockShoe.barcode}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Supplier</span>
+                <div className="font-medium">{mockShoe.supplier}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Location</span>
+                <div className="font-medium">{mockShoe.location}</div>
+              </div>
             </div>
             {mockShoe.description && (
               <>
@@ -148,7 +233,9 @@ function ShoeDetailPage() {
               <Separator />
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Profit</span>
-                <span className="font-medium text-green-600">${profit} ({margin}%)</span>
+                <span className="font-medium text-green-600">
+                  ${profit} ({margin}%)
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -197,13 +284,18 @@ function ShoeDetailPage() {
               {mockMovements.map((m) => (
                 <TableRow key={m.id}>
                   <TableCell>
-                    <Badge variant={m.type === "in" ? "success" : m.type === "out" ? "destructive" : "warning"}>
+                    <Badge
+                      variant={
+                        m.type === "in" ? "success" : m.type === "out" ? "destructive" : "warning"
+                      }
+                    >
                       {m.type === "in" ? "IN" : m.type === "out" ? "OUT" : "ADJ"}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <span className={m.type === "in" ? "text-green-600" : "text-red-600"}>
-                      {m.type === "in" ? "+" : m.quantity < 0 ? "" : "-"}{Math.abs(m.quantity)}
+                      {m.type === "in" ? "+" : m.quantity < 0 ? "" : "-"}
+                      {Math.abs(m.quantity)}
                     </span>
                   </TableCell>
                   <TableCell>{m.reason}</TableCell>
@@ -222,15 +314,31 @@ function ShoeDetailPage() {
           <DialogHeader>
             <DialogTitle className="text-base">Record Stock Movement</DialogTitle>
           </DialogHeader>
-          <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); movementForm.handleSubmit(); }} className="flex flex-col gap-3">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              movementForm.handleSubmit();
+            }}
+            className="flex flex-col gap-3"
+          >
             <movementForm.Field name="type">
               {(field) => (
                 <div className="flex flex-col gap-1.5">
                   <Label>Movement Type</Label>
-                  <Select value={field.state.value} onValueChange={(v) => field.handleChange(v as "in" | "out" | "adjustment")}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={field.state.value}
+                    onValueChange={(v) => field.handleChange(v as "in" | "out" | "adjustment")}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
-                      {movementTypes.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                      {movementTypes.map((t) => (
+                        <SelectItem key={t.value} value={t.value}>
+                          {t.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -240,8 +348,18 @@ function ShoeDetailPage() {
               {(field) => (
                 <div className="flex flex-col gap-1.5">
                   <Label>Quantity</Label>
-                  <Input type="number" min={1} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
-                  {field.state.meta.errors.length > 0 && <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>}
+                  <Input
+                    type="number"
+                    min={1}
+                    value={field.state.value || ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <p className="text-xs text-destructive">
+                      {field.state.meta.errors[0]?.message}
+                    </p>
+                  )}
                 </div>
               )}
             </movementForm.Field>
@@ -249,13 +367,27 @@ function ShoeDetailPage() {
               {(field) => (
                 <div className="flex flex-col gap-1.5">
                   <Label>Reason</Label>
-                  <Textarea value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} rows={2} />
+                  <Textarea
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    rows={2}
+                  />
                 </div>
               )}
             </movementForm.Field>
             <DialogFooter>
-              <Button type="button" variant="outline" size="sm" onClick={() => setShowMovementDialog(false)}>Cancel</Button>
-              <Button type="submit" size="sm"><Save className="size-3.5" /> Save</Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowMovementDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" size="sm">
+                <Save className="size-3.5" /> Save
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

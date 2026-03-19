@@ -1,6 +1,5 @@
-import { HeadContent, Outlet, createRootRoute } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Button } from "@/components/ui/button";
 
 import "../index.css";
 

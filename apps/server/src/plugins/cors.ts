@@ -1,6 +1,6 @@
 import fastifyCors from "@fastify/cors";
-import { env } from "@/env";
 import type { FastifyPluginAsync } from "fastify";
+import { env } from "@/env";
 
 const cors: FastifyPluginAsync = async (fastify) => {
   fastify.register(fastifyCors, {

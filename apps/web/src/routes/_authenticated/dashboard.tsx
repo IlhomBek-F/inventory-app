@@ -1,8 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import {
+  AlertTriangle,
+  ArrowDown,
+  ArrowUp,
+  DollarSign,
+  Eye,
+  Package,
+  Plus,
+  RefreshCw,
+  Warehouse,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Package, Warehouse, DollarSign, AlertTriangle, Plus, Eye, ArrowDown, ArrowUp, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -92,10 +102,15 @@ function DashboardPage() {
           </CardHeader>
           <CardContent className="flex flex-col gap-1.5">
             {lowStockItems.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted/50 text-sm">
+              <div
+                key={item.id}
+                className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted/50 text-sm"
+              >
                 <div>
                   <span className="font-medium">{item.name}</span>
-                  <span className="text-xs text-muted-foreground ml-1">{item.brand} · {item.size}</span>
+                  <span className="text-xs text-muted-foreground ml-1">
+                    {item.brand} · {item.size}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Badge variant={item.quantity === 0 ? "destructive" : "warning"}>
@@ -119,7 +134,10 @@ function DashboardPage() {
           </CardHeader>
           <CardContent className="flex flex-col gap-1.5">
             {recentMovements.map((movement) => (
-              <div key={movement.id} className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted/50 text-sm">
+              <div
+                key={movement.id}
+                className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-muted/50 text-sm"
+              >
                 <div className="flex items-center gap-2">
                   {movement.type === "in" ? (
                     <ArrowDown className="size-3.5 text-green-500" />
@@ -133,8 +151,17 @@ function DashboardPage() {
                     <span className="text-xs text-muted-foreground ml-1">{movement.date}</span>
                   </div>
                 </div>
-                <Badge variant={movement.type === "in" ? "success" : movement.type === "out" ? "destructive" : "warning"}>
-                  {movement.type === "out" ? "-" : "+"}{Math.abs(movement.quantity)}
+                <Badge
+                  variant={
+                    movement.type === "in"
+                      ? "success"
+                      : movement.type === "out"
+                        ? "destructive"
+                        : "warning"
+                  }
+                >
+                  {movement.type === "out" ? "-" : "+"}
+                  {Math.abs(movement.quantity)}
                 </Badge>
               </div>
             ))}

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import ShoeForm, { type ShoeFormData } from "@/components/shoe-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_authenticated/shoes/$shoeId/edit")({
   component: EditShoePage,
@@ -31,10 +31,8 @@ function EditShoePage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (data: ShoeFormData) => {
+  const handleSubmit = async (_data: ShoeFormData) => {
     setLoading(true);
-    // TODO: PUT to API
-    console.log("Updating shoe:", shoeId, data);
     setTimeout(() => {
       setLoading(false);
       navigate({ to: "/shoes/$shoeId", params: { shoeId } });
@@ -48,7 +46,12 @@ function EditShoePage() {
           <CardTitle className="text-lg">Edit Shoe</CardTitle>
         </CardHeader>
         <CardContent>
-          <ShoeForm initialData={mockShoe} onSubmit={handleSubmit} loading={loading} submitLabel="Update Shoe" />
+          <ShoeForm
+            initialData={mockShoe}
+            onSubmit={handleSubmit}
+            loading={loading}
+            submitLabel="Update Shoe"
+          />
         </CardContent>
       </Card>
     </div>

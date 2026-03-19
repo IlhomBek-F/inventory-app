@@ -1,8 +1,8 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import autoload from "@fastify/autoload";
-import { env } from "@/env";
 import Fastify from "fastify";
-import path from "path";
-import { fileURLToPath } from "url";
+import { env } from "@/env";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

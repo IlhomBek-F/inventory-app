@@ -1,6 +1,6 @@
 import { devToolsMiddleware } from "@ai-sdk/devtools";
 import { google } from "@ai-sdk/google";
-import { streamText, type UIMessage, convertToModelMessages, wrapLanguageModel } from "ai";
+import { convertToModelMessages, streamText, type UIMessage, wrapLanguageModel } from "ai";
 import type { FastifyPluginAsync } from "fastify";
 
 interface AiRequestBody {
@@ -9,7 +9,7 @@ interface AiRequestBody {
 }
 
 const aiRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.post("/ai", async function (request) {
+  fastify.post("/ai", async (request) => {
     const { messages } = request.body as AiRequestBody;
     const model = wrapLanguageModel({
       model: google("gemini-2.5-flash"),
