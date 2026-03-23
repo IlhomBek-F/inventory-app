@@ -7,7 +7,7 @@ import type {
   StockMovementBodyType,
   StockMovementListItemType,
   StockMovementResponseType,
-} from "@inventory/shared/schemas";
+} from "@inventory/shared/types";
 import { env } from "./env";
 
 const BASE_URL = env.VITE_SERVER_URL;

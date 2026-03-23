@@ -1,4 +1,4 @@
-import { type Static, Type } from "@sinclair/typebox";
+import { Type } from "@sinclair/typebox";
 
 // ── Shared ──
 
@@ -6,14 +6,10 @@ export const IdParams = Type.Object({
   id: Type.String(),
 });
 
-export type IdParamsType = Static<typeof IdParams>;
-
 export const PaginationQuery = Type.Object({
   limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 50 })),
   offset: Type.Optional(Type.Integer({ minimum: 0, default: 0 })),
 });
-
-export type PaginationQueryType = Static<typeof PaginationQuery>;
 
 export const ErrorResponse = Type.Object({
   statusCode: Type.Number(),
@@ -46,11 +42,7 @@ export const ShoeBody = Type.Object({
   location: Type.Optional(Type.String()),
 });
 
-export type ShoeBodyType = Static<typeof ShoeBody>;
-
 export const ShoeUpdateBody = Type.Partial(ShoeBody);
-
-export type ShoeUpdateBodyType = Static<typeof ShoeUpdateBody>;
 
 export const ShoeResponse = Type.Object({
   id: Type.String(),
@@ -75,8 +67,6 @@ export const ShoeResponse = Type.Object({
   updatedAt: Type.String({ format: "date-time" }),
 });
 
-export type ShoeResponseType = Static<typeof ShoeResponse>;
-
 export const ListShoesQuery = Type.Object({
   search: Type.Optional(Type.String()),
   sortBy: Type.Optional(Type.String()),
@@ -85,14 +75,10 @@ export const ListShoesQuery = Type.Object({
   offset: Type.Optional(Type.Integer({ minimum: 0, default: 0 })),
 });
 
-export type ListShoesQueryType = Static<typeof ListShoesQuery>;
-
 export const ListShoesResponse = Type.Object({
   items: Type.Array(ShoeResponse),
   total: Type.Number(),
 });
-
-export type ListShoesResponseType = Static<typeof ListShoesResponse>;
 
 // ── Stock Movement ──
 
@@ -101,8 +87,6 @@ export const StockMovementBody = Type.Object({
   quantity: Type.Integer({ minimum: 1 }),
   reason: Type.Optional(Type.String()),
 });
-
-export type StockMovementBodyType = Static<typeof StockMovementBody>;
 
 export const StockMovementResponse = Type.Object({
   movement: Type.Object({
@@ -117,8 +101,6 @@ export const StockMovementResponse = Type.Object({
   newQuantity: Type.Integer(),
 });
 
-export type StockMovementResponseType = Static<typeof StockMovementResponse>;
-
 export const StockMovementListItem = Type.Object({
   id: Type.String(),
   shoeId: Type.String(),
@@ -129,14 +111,10 @@ export const StockMovementListItem = Type.Object({
   createdAt: Type.String({ format: "date-time" }),
 });
 
-export type StockMovementListItemType = Static<typeof StockMovementListItem>;
-
 export const MovementListQuery = Type.Object({
   limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 50 })),
   offset: Type.Optional(Type.Integer({ minimum: 0, default: 0 })),
 });
-
-export type MovementListQueryType = Static<typeof MovementListQuery>;
 
 // ── Dashboard ──
 
@@ -160,5 +138,3 @@ export const DashboardResponse = Type.Object({
     }),
   ),
 });
-
-export type DashboardResponseType = Static<typeof DashboardResponse>;
