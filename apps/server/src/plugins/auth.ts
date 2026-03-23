@@ -1,5 +1,5 @@
-import fp from "fastify-plugin";
 import type { FastifyInstance, FastifyRequest } from "fastify";
+import fp from "fastify-plugin";
 import { auth } from "@/auth";
 
 const PUBLIC_ROUTES = ["/", "/api/auth/*"];
@@ -9,6 +9,7 @@ function isPublicRoute(url: string): boolean {
     if (route.endsWith("*")) {
       return url.startsWith(route.slice(0, -1));
     }
+
     return url === route;
   });
 }
@@ -17,10 +18,13 @@ async function authenticate(fastify: FastifyInstance, request: FastifyRequest) {
   const session = await auth.api.getSession({
     headers: request.headers as unknown as Headers,
   });
+
   if (!session) {
     throw fastify.httpErrors.unauthorized("Not authenticated");
   }
+
   request.session = session;
+
   return session;
 }
 

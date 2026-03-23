@@ -182,8 +182,10 @@ function ShoesListPage() {
       const bv = b[sortKey];
       const cmp =
         typeof av === "number" ? av - (bv as number) : String(av).localeCompare(String(bv));
+
       return sortAsc ? cmp : -cmp;
     });
+
     return result;
   }, [search, sortKey, sortAsc]);
 
@@ -311,6 +313,7 @@ function ShoesListPage() {
               filtered.map((shoe) => {
                 const isLow = shoe.quantity <= shoe.minStockAlert;
                 const isOut = shoe.quantity === 0;
+
                 return (
                   <TableRow key={shoe.id}>
                     <TableCell className="font-medium">{shoe.name}</TableCell>

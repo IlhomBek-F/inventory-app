@@ -59,13 +59,33 @@ const start = async () => {
 };
 
 // Graceful shutdown
+let isShuttingDown = false;
+const SHUTDOWN_TIMEOUT = 10_000;
+
 const gracefulShutdown = async (signal: string) => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+
   fastify.log.info(`Received ${signal}, shutting down gracefully...`);
-  await fastify.close();
-  process.exit(0);
+
+  const forceExit = setTimeout(() => {
+    fastify.log.error("Shutdown timed out, forcing exit");
+    process.exit(1);
+  }, SHUTDOWN_TIMEOUT);
+  forceExit.unref();
+
+  try {
+    await fastify.close();
+    fastify.log.info("Server closed successfully");
+    process.exit(0);
+  } catch (err) {
+    fastify.log.error(err, "Error during shutdown");
+    process.exit(1);
+  }
 };
 
-process.on("SIGINT", () => gracefulShutdown("SIGINT"));
-process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+for (const signal of ["SIGINT", "SIGTERM"] as const) {
+  process.on(signal, () => gracefulShutdown(signal));
+}
 
 start();

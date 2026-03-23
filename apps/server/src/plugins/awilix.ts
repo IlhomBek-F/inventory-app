@@ -1,12 +1,12 @@
 import { diContainer, fastifyAwilixPlugin } from "@fastify/awilix";
 import { asFunction, Lifetime } from "awilix";
-import type { FastifyPluginAsync } from "fastify";
+import fp from "fastify-plugin";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { ShoeService } from "@/services/shoe.service";
 import { StockMovementService } from "@/services/stock-movement.service";
 
-const awilix: FastifyPluginAsync = async (fastify) => {
+export default fp(async (fastify) => {
   await fastify.register(fastifyAwilixPlugin, {
     disposeOnClose: true,
     asyncDispose: true,
@@ -27,6 +27,4 @@ const awilix: FastifyPluginAsync = async (fastify) => {
       lifetime: Lifetime.SINGLETON,
     }),
   });
-};
-
-export default awilix;
+});

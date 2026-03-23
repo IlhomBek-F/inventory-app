@@ -32,9 +32,11 @@ function LoginPage() {
       });
 
       setLoading(false);
+
       if (error) {
         return;
       }
+
       navigate({ to: "/dashboard" });
     },
   });

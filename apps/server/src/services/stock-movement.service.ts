@@ -1,6 +1,6 @@
-import { shoe, stockMovement } from "@/db/schema";
 import { and, desc, eq } from "drizzle-orm";
 import type { db as Database } from "@/db";
+import { shoe, stockMovement } from "@/db/schema";
 
 type Db = typeof Database;
 
@@ -23,10 +23,12 @@ export class StockMovementService {
       }
 
       let newQuantity = currentShoe.quantity;
+
       if (data.type === "in") {
         newQuantity += data.quantity;
       } else if (data.type === "out") {
         newQuantity -= data.quantity;
+
         if (newQuantity < 0) {
           throw new Error("Insufficient stock");
         }

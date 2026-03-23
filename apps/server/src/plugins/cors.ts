@@ -1,8 +1,8 @@
 import fastifyCors from "@fastify/cors";
-import type { FastifyPluginAsync } from "fastify";
+import fp from "fastify-plugin";
 import { env } from "@/env";
 
-const cors: FastifyPluginAsync = async (fastify) => {
+export default fp(async (fastify) => {
   fastify.register(fastifyCors, {
     origin: env.CORS_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -10,6 +10,4 @@ const cors: FastifyPluginAsync = async (fastify) => {
     credentials: true,
     maxAge: 86400,
   });
-};
-
-export default cors;
+});

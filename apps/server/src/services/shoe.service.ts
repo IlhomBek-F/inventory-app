@@ -47,6 +47,7 @@ export class ShoeService {
         ilike(shoe.category, `%${search}%`),
         ilike(shoe.sku, `%${search}%`),
       );
+
       if (searchCondition) {
         conditions.push(searchCondition);
       }

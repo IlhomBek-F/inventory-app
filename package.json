@@ -9,8 +9,9 @@
     "dev:web": "pnpm --filter web dev",
     "dev:server": "pnpm --filter server dev",
     "format": "biome format --write .",
-    "lint": "biome lint .",
-    "check": "biome check --write .",
+    "lint": "biome lint . && eslint .",
+    "lint:fix": "biome check --write . && eslint --fix .",
+    "check": "biome check --write . && eslint --fix .",
     "db:push": "pnpm --filter server db:push",
     "db:studio": "pnpm --filter server db:studio",
     "db:generate": "pnpm --filter server db:generate",
@@ -18,8 +19,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "catalog:",
-    "typescript": "^5"
+    "eslint": "^10.0.3",
+    "typescript": "^5",
+    "typescript-eslint": "^8.57.1"
   },
   "packageManager": "pnpm@10.28.2"
 }
