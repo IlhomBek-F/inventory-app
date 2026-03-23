@@ -1,5 +1,5 @@
+import type { Cradle } from "@fastify/awilix";
 import type { FastifyPluginAsync, FastifyRequest } from "fastify";
-
 import {
   DashboardResponse,
   ErrorResponse,
@@ -225,7 +225,7 @@ const shoeRoutes: FastifyPluginAsync = async (fastify) => {
       },
     },
     async (request) => {
-      const { stockMovementService } = request.diScope.cradle;
+      const { stockMovementService }: Cradle = request.diScope.cradle;
 
       return stockMovementService.listByShoe(
         request.params.id,
