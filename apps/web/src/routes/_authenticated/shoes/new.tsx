@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import ShoeForm, { type ShoeFormData } from "@/components/shoe-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/_authenticated/shoes/new")({
   component: NewShoePage,
@@ -11,12 +12,14 @@ function NewShoePage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (_data: ShoeFormData) => {
+  const handleSubmit = async (data: ShoeFormData) => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await api.shoes.create(data);
       navigate({ to: "/shoes" });
-    }, 500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

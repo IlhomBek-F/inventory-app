@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -31,76 +31,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/lib/api";
 import { movementSchema } from "@/lib/schemas";
 
 export const Route = createFileRoute("/_authenticated/shoes/$shoeId/")({
+  loader: async ({ params }) => {
+    const [shoe, movements] = await Promise.all([
+      api.shoes.get(params.shoeId),
+      api.shoes.getMovements(params.shoeId),
+    ]);
+    return { shoe, movements };
+  },
   component: ShoeDetailPage,
 });
-
-// Mock data
-const mockShoe = {
-  id: "1",
-  name: "Air Max 90",
-  brand: "Nike",
-  category: "Sneakers",
-  size: "42",
-  color: "White/Red",
-  condition: "New",
-  sku: "NK-AM90-42",
-  barcode: "1234567890123",
-  description: "Classic Air Max 90 sneaker with visible air unit. Iconic design since 1990.",
-  costPrice: 80,
-  sellPrice: 130,
-  quantity: 2,
-  minStockAlert: 5,
-  supplier: "Nike Direct",
-  location: "Warehouse A",
-  createdAt: "2026-03-01",
-  updatedAt: "2026-03-16",
-};
-
-const mockMovements = [
-  {
-    id: "1",
-    type: "in",
-    quantity: 50,
-    reason: "Initial stock",
-    createdAt: "2026-03-01",
-    user: "Admin",
-  },
-  {
-    id: "2",
-    type: "out",
-    quantity: 20,
-    reason: "Store transfer",
-    createdAt: "2026-03-05",
-    user: "Admin",
-  },
-  {
-    id: "3",
-    type: "out",
-    quantity: 15,
-    reason: "Online orders",
-    createdAt: "2026-03-10",
-    user: "Admin",
-  },
-  {
-    id: "4",
-    type: "adjustment",
-    quantity: -3,
-    reason: "Damaged items",
-    createdAt: "2026-03-12",
-    user: "Admin",
-  },
-  {
-    id: "5",
-    type: "out",
-    quantity: 10,
-    reason: "Retail sales",
-    createdAt: "2026-03-15",
-    user: "Admin",
-  },
-];
 
 const movementTypes = [
   { label: "Stock In", value: "in" },
@@ -110,21 +53,34 @@ const movementTypes = [
 
 function ShoeDetailPage() {
   const { shoeId } = Route.useParams();
+  const { shoe, movements } = Route.useLoaderData();
+  const router = useRouter();
+  const navigate = useNavigate();
   const [showMovementDialog, setShowMovementDialog] = useState(false);
 
-  const isLowStock = mockShoe.quantity <= mockShoe.minStockAlert;
-  const isOutOfStock = mockShoe.quantity === 0;
-  const profit = mockShoe.sellPrice - mockShoe.costPrice;
-  const margin = ((profit / mockShoe.sellPrice) * 100).toFixed(1);
+  const costPrice = Number(shoe.costPrice);
+  const sellPrice = Number(shoe.sellPrice);
+  const isLowStock = shoe.quantity <= shoe.minStockAlert;
+  const isOutOfStock = shoe.quantity === 0;
+  const profit = sellPrice - costPrice;
+  const margin = sellPrice > 0 ? ((profit / sellPrice) * 100).toFixed(1) : "0.0";
+
+  const handleDelete = async () => {
+    if (!confirm(`Delete "${shoe.name}"?`)) return;
+    await api.shoes.delete(shoe.id);
+    navigate({ to: "/shoes" });
+  };
 
   const movementForm = useForm({
     defaultValues: { type: "in" as "in" | "out" | "adjustment", quantity: 0, reason: "" },
     validators: {
       onChange: movementSchema,
     },
-    onSubmit: ({ value }) => {
+    onSubmit: async ({ value }) => {
+      await api.shoes.addMovement(shoeId, value);
       setShowMovementDialog(false);
       movementForm.reset();
+      router.invalidate();
     },
   });
 
@@ -138,7 +94,7 @@ function ShoeDetailPage() {
               <ArrowLeft className="size-4" />
             </Button>
           </Link>
-          <h1 className="text-lg font-bold">{mockShoe.name}</h1>
+          <h1 className="text-lg font-bold">{shoe.name}</h1>
           <Badge variant={isOutOfStock ? "destructive" : isLowStock ? "warning" : "success"}>
             {isOutOfStock ? "Out of Stock" : isLowStock ? "Low Stock" : "In Stock"}
           </Badge>
@@ -153,7 +109,7 @@ function ShoeDetailPage() {
               <Pencil className="size-3.5" /> Edit
             </Button>
           </Link>
-          <Button size="sm" variant="destructive">
+          <Button size="sm" variant="destructive" onClick={handleDelete}>
             <Trash2 className="size-3.5" /> Delete
           </Button>
         </div>
@@ -169,47 +125,47 @@ function ShoeDetailPage() {
             <div className="grid grid-cols-2 gap-y-2 gap-x-6 text-sm">
               <div>
                 <span className="text-muted-foreground">Brand</span>
-                <div className="font-medium">{mockShoe.brand}</div>
+                <div className="font-medium">{shoe.brand}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">Category</span>
-                <div className="font-medium">{mockShoe.category}</div>
+                <div className="font-medium">{shoe.category}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">Size</span>
-                <div className="font-medium">{mockShoe.size}</div>
+                <div className="font-medium">{shoe.size}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">Color</span>
-                <div className="font-medium">{mockShoe.color}</div>
+                <div className="font-medium">{shoe.color}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">Condition</span>
-                <div className="font-medium">{mockShoe.condition}</div>
+                <div className="font-medium">{shoe.condition}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">SKU</span>
-                <div className="font-medium">{mockShoe.sku}</div>
+                <div className="font-medium">{shoe.sku}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">Barcode</span>
-                <div className="font-medium">{mockShoe.barcode}</div>
+                <div className="font-medium">{shoe.barcode}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">Supplier</span>
-                <div className="font-medium">{mockShoe.supplier}</div>
+                <div className="font-medium">{shoe.supplier}</div>
               </div>
               <div>
                 <span className="text-muted-foreground">Location</span>
-                <div className="font-medium">{mockShoe.location}</div>
+                <div className="font-medium">{shoe.location}</div>
               </div>
             </div>
-            {mockShoe.description && (
+            {shoe.description && (
               <>
                 <Separator className="my-3" />
                 <div>
                   <span className="text-muted-foreground text-sm">Description</span>
-                  <p className="mt-1 text-sm">{mockShoe.description}</p>
+                  <p className="mt-1 text-sm">{shoe.description}</p>
                 </div>
               </>
             )}
@@ -224,11 +180,11 @@ function ShoeDetailPage() {
             <CardContent className="flex flex-col gap-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Cost Price</span>
-                <span className="font-medium">${mockShoe.costPrice}</span>
+                <span className="font-medium">${costPrice}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Sell Price</span>
-                <span className="font-medium">${mockShoe.sellPrice}</span>
+                <span className="font-medium">${sellPrice}</span>
               </div>
               <Separator />
               <div className="flex justify-between">
@@ -248,16 +204,16 @@ function ShoeDetailPage() {
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Current Stock</span>
                 <Badge variant={isOutOfStock ? "destructive" : isLowStock ? "warning" : "success"}>
-                  {mockShoe.quantity}
+                  {shoe.quantity}
                 </Badge>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Min Alert</span>
-                <span className="font-medium">{mockShoe.minStockAlert}</span>
+                <span className="font-medium">{shoe.minStockAlert}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Stock Value</span>
-                <span className="font-medium">${mockShoe.quantity * mockShoe.costPrice}</span>
+                <span className="font-medium">${shoe.quantity * costPrice}</span>
               </div>
             </CardContent>
           </Card>
@@ -281,7 +237,7 @@ function ShoeDetailPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockMovements.map((m) => (
+              {movements.map((m) => (
                 <TableRow key={m.id}>
                   <TableCell>
                     <Badge
@@ -294,13 +250,13 @@ function ShoeDetailPage() {
                   </TableCell>
                   <TableCell>
                     <span className={m.type === "in" ? "text-green-600" : "text-red-600"}>
-                      {m.type === "in" ? "+" : m.quantity < 0 ? "" : "-"}
+                      {m.type === "in" ? "+" : "-"}
                       {Math.abs(m.quantity)}
                     </span>
                   </TableCell>
                   <TableCell>{m.reason}</TableCell>
-                  <TableCell>{m.user}</TableCell>
-                  <TableCell>{m.createdAt}</TableCell>
+                  <TableCell>{m.userId}</TableCell>
+                  <TableCell>{new Date(m.createdAt).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

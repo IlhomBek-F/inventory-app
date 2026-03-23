@@ -2,41 +2,45 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import ShoeForm, { type ShoeFormData } from "@/components/shoe-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/_authenticated/shoes/$shoeId/edit")({
+  loader: ({ params }) => api.shoes.get(params.shoeId),
   component: EditShoePage,
 });
 
-// Mock data — will be replaced with API call
-const mockShoe: Partial<ShoeFormData> = {
-  name: "Air Max 90",
-  brand: "Nike",
-  category: "Sneakers",
-  size: "42",
-  color: "White/Red",
-  condition: "New",
-  sku: "NK-AM90-42",
-  barcode: "1234567890123",
-  costPrice: 80,
-  sellPrice: 130,
-  quantity: 2,
-  minStockAlert: 5,
-  supplier: "Nike Direct",
-  location: "Warehouse A",
-  description: "Classic Air Max 90 sneaker.",
-};
-
 function EditShoePage() {
   const { shoeId } = Route.useParams();
+  const shoe = Route.useLoaderData();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (_data: ShoeFormData) => {
+  const initialData: Partial<ShoeFormData> = {
+    name: shoe.name,
+    brand: shoe.brand,
+    category: shoe.category,
+    size: shoe.size,
+    color: shoe.color ?? "",
+    condition: shoe.condition ?? "New",
+    sku: shoe.sku ?? "",
+    barcode: shoe.barcode ?? "",
+    costPrice: Number(shoe.costPrice),
+    sellPrice: Number(shoe.sellPrice),
+    quantity: shoe.quantity,
+    minStockAlert: shoe.minStockAlert,
+    supplier: shoe.supplier ?? "",
+    location: shoe.location ?? "",
+    description: shoe.description ?? "",
+  };
+
+  const handleSubmit = async (data: ShoeFormData) => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await api.shoes.update(shoeId, data);
       navigate({ to: "/shoes/$shoeId", params: { shoeId } });
-    }, 500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,7 +51,7 @@ function EditShoePage() {
         </CardHeader>
         <CardContent>
           <ShoeForm
-            initialData={mockShoe}
+            initialData={initialData}
             onSubmit={handleSubmit}
             loading={loading}
             submitLabel="Update Shoe"

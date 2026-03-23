@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { ArrowUpDown, Download, Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -12,170 +12,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { api, type Shoe } from "@/lib/api";
 
 export const Route = createFileRoute("/_authenticated/shoes/")({
+  loader: () => api.shoes.list(),
   component: ShoesListPage,
 });
-
-// Mock data — will be replaced with API calls
-const mockShoes = [
-  {
-    id: "1",
-    name: "Air Max 90",
-    brand: "Nike",
-    category: "Sneakers",
-    size: "42",
-    color: "White/Red",
-    sku: "NK-AM90-42",
-    costPrice: 80,
-    sellPrice: 130,
-    quantity: 2,
-    minStockAlert: 5,
-    condition: "New",
-  },
-  {
-    id: "2",
-    name: "Ultra Boost 22",
-    brand: "Adidas",
-    category: "Running",
-    size: "43",
-    color: "Black",
-    sku: "AD-UB22-43",
-    costPrice: 100,
-    sellPrice: 180,
-    quantity: 35,
-    minStockAlert: 10,
-    condition: "New",
-  },
-  {
-    id: "3",
-    name: "Classic Leather",
-    brand: "Reebok",
-    category: "Casual",
-    size: "40",
-    color: "White",
-    sku: "RB-CL-40",
-    costPrice: 45,
-    sellPrice: 75,
-    quantity: 1,
-    minStockAlert: 3,
-    condition: "New",
-  },
-  {
-    id: "4",
-    name: "Old Skool",
-    brand: "Vans",
-    category: "Skate",
-    size: "41",
-    color: "Black/White",
-    sku: "VN-OS-41",
-    costPrice: 35,
-    sellPrice: 65,
-    quantity: 0,
-    minStockAlert: 3,
-    condition: "New",
-  },
-  {
-    id: "5",
-    name: "Air Force 1",
-    brand: "Nike",
-    category: "Sneakers",
-    size: "44",
-    color: "White",
-    sku: "NK-AF1-44",
-    costPrice: 60,
-    sellPrice: 110,
-    quantity: 50,
-    minStockAlert: 15,
-    condition: "New",
-  },
-  {
-    id: "6",
-    name: "Chuck Taylor All Star",
-    brand: "Converse",
-    category: "Casual",
-    size: "42",
-    color: "Black",
-    sku: "CN-CT-42",
-    costPrice: 30,
-    sellPrice: 55,
-    quantity: 28,
-    minStockAlert: 8,
-    condition: "New",
-  },
-  {
-    id: "7",
-    name: "Stan Smith",
-    brand: "Adidas",
-    category: "Casual",
-    size: "43",
-    color: "White/Green",
-    sku: "AD-SS-43",
-    costPrice: 50,
-    sellPrice: 85,
-    quantity: 3,
-    minStockAlert: 5,
-    condition: "New",
-  },
-  {
-    id: "8",
-    name: "574 Core",
-    brand: "New Balance",
-    category: "Sneakers",
-    size: "42",
-    color: "Grey",
-    sku: "NB-574-42",
-    costPrice: 55,
-    sellPrice: 90,
-    quantity: 18,
-    minStockAlert: 5,
-    condition: "New",
-  },
-  {
-    id: "9",
-    name: "Gel-Kayano 30",
-    brand: "Asics",
-    category: "Running",
-    size: "44",
-    color: "Blue",
-    sku: "AS-GK30-44",
-    costPrice: 90,
-    sellPrice: 160,
-    quantity: 12,
-    minStockAlert: 4,
-    condition: "New",
-  },
-  {
-    id: "10",
-    name: "Suede Classic",
-    brand: "Puma",
-    category: "Casual",
-    size: "41",
-    color: "Navy",
-    sku: "PM-SC-41",
-    costPrice: 40,
-    sellPrice: 70,
-    quantity: 22,
-    minStockAlert: 5,
-    condition: "New",
-  },
-];
 
 type SortKey = "name" | "brand" | "category" | "size" | "costPrice" | "sellPrice" | "quantity";
 
 function ShoesListPage() {
+  const { items: shoes } = Route.useLoaderData();
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortAsc, setSortAsc] = useState(true);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    const result = mockShoes.filter(
+    const result = shoes.filter(
       (s) =>
         s.name.toLowerCase().includes(q) ||
         s.brand.toLowerCase().includes(q) ||
         s.category.toLowerCase().includes(q) ||
-        s.sku.toLowerCase().includes(q),
+        (s.sku ?? "").toLowerCase().includes(q),
     );
     result.sort((a, b) => {
       const av = a[sortKey];
@@ -187,7 +47,7 @@ function ShoesListPage() {
     });
 
     return result;
-  }, [search, sortKey, sortAsc]);
+  }, [shoes, search, sortKey, sortAsc]);
 
   const toggleSort = (key: SortKey) => {
     if (sortKey === key) setSortAsc(!sortAsc);
@@ -195,6 +55,12 @@ function ShoesListPage() {
       setSortKey(key);
       setSortAsc(true);
     }
+  };
+
+  const handleDelete = async (shoe: Shoe) => {
+    if (!confirm(`Delete "${shoe.name}"?`)) return;
+    await api.shoes.delete(shoe.id);
+    router.invalidate();
   };
 
   const exportCSV = () => {
@@ -210,7 +76,7 @@ function ShoesListPage() {
       "Qty",
       "Condition",
     ];
-    const rows = mockShoes.map((s) => [
+    const rows = shoes.map((s) => [
       s.name,
       s.brand,
       s.category,
@@ -341,7 +207,7 @@ function ShoesListPage() {
                             <Pencil className="size-3.5" />
                           </Button>
                         </Link>
-                        <Button variant="ghost" size="icon-sm">
+                        <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(shoe)}>
                           <Trash2 className="size-3.5 text-destructive" />
                         </Button>
                       </div>
