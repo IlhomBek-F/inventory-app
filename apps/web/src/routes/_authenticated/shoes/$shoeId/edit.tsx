@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import ShoeForm, { type ShoeFormData } from "@/components/shoe-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
@@ -13,6 +14,7 @@ function EditShoePage() {
   const { shoeId } = Route.useParams();
   const shoe = Route.useLoaderData();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   const initialData: Partial<ShoeFormData> = {
@@ -47,14 +49,14 @@ function EditShoePage() {
     <div className="max-w-3xl mx-auto">
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Edit Shoe</CardTitle>
+          <CardTitle className="text-lg">{t("shoeForm.editTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <ShoeForm
             initialData={initialData}
             onSubmit={handleSubmit}
             loading={loading}
-            submitLabel="Update Shoe"
+            submitLabel={t("shoeForm.updateShoe")}
           />
         </CardContent>
       </Card>

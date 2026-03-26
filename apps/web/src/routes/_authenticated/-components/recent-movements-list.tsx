@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUp, RefreshCw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardData } from "@/lib/api";
@@ -8,10 +9,12 @@ interface RecentMovementsListProps {
 }
 
 export function RecentMovementsList({ movements }: RecentMovementsListProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm">Recent Stock Movements</CardTitle>
+        <CardTitle className="text-sm">{t("dashboard.recentMovements.title")}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-1.5">
         {movements.map((movement) => (

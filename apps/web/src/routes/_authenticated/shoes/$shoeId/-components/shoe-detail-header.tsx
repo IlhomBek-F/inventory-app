@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,13 @@ export function ShoeDetailHeader({
   onDelete,
 }: ShoeDetailHeaderProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const { t } = useTranslation();
+
+  const stockStatus = isOutOfStock
+    ? t("shoeDetail.stockStatus.outOfStock")
+    : isLowStock
+      ? t("shoeDetail.stockStatus.lowStock")
+      : t("shoeDetail.stockStatus.inStock");
 
   return (
     <>
@@ -43,21 +51,21 @@ export function ShoeDetailHeader({
           </Link>
           <h1 className="text-lg font-bold">{shoe.name}</h1>
           <Badge variant={isOutOfStock ? "destructive" : isLowStock ? "warning" : "success"}>
-            {isOutOfStock ? "Out of Stock" : isLowStock ? "Low Stock" : "In Stock"}
+            {stockStatus}
           </Badge>
         </div>
         <div className="flex gap-1">
           <Button size="sm" variant="secondary" onClick={onAddMovement}>
             <Plus className="size-3.5" />
-            Movement
+            {t("shoeDetail.movement")}
           </Button>
           <Link to="/shoes/$shoeId/edit" params={{ shoeId }}>
             <Button size="sm" variant="outline">
-              <Pencil className="size-3.5" /> Edit
+              <Pencil className="size-3.5" /> {t("common.edit")}
             </Button>
           </Link>
           <Button size="sm" variant="destructive" onClick={() => setConfirmOpen(true)}>
-            <Trash2 className="size-3.5" /> Delete
+            <Trash2 className="size-3.5" /> {t("common.delete")}
           </Button>
         </div>
       </div>
@@ -65,16 +73,14 @@ export function ShoeDetailHeader({
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete shoe</DialogTitle>
+            <DialogTitle>{t("shoeDetail.deleteDialog.title")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete{" "}
-              <span className="font-medium text-foreground">{shoe.name}</span>? This action cannot
-              be undone.
+              {t("shoeDetail.deleteDialog.description", { name: shoe.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmOpen(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -83,7 +89,7 @@ export function ShoeDetailHeader({
                 onDelete();
               }}
             >
-              Delete
+              {t("common.delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

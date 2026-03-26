@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Eye } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +11,12 @@ interface LowStockListProps {
 }
 
 export function LowStockList({ items }: LowStockListProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm">Low Stock Alerts</CardTitle>
+        <CardTitle className="text-sm">{t("dashboard.lowStock.title")}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-1.5">
         {items.map((item) => (
@@ -29,7 +32,7 @@ export function LowStockList({ items }: LowStockListProps) {
             </div>
             <div className="flex items-center gap-1.5">
               <Badge variant={item.quantity === 0 ? "destructive" : "warning"}>
-                {item.quantity} left
+                {item.quantity} {t("dashboard.lowStock.left")}
               </Badge>
               <Link to="/shoes/$shoeId" params={{ shoeId: item.id }}>
                 <Button variant="ghost" size="icon-sm">

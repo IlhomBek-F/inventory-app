@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,20 +16,22 @@ interface StockMovementTableProps {
 }
 
 export function StockMovementTable({ movements }: StockMovementTableProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm">Stock Movement History</CardTitle>
+        <CardTitle className="text-sm">{t("shoeDetail.stockHistory")}</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-16">Type</TableHead>
-              <TableHead className="w-20">Qty</TableHead>
-              <TableHead>Reason</TableHead>
-              <TableHead className="w-20">User</TableHead>
-              <TableHead className="w-24">Date</TableHead>
+              <TableHead className="w-16">{t("shoeDetail.movementTable.type")}</TableHead>
+              <TableHead className="w-20">{t("shoeDetail.movementTable.qty")}</TableHead>
+              <TableHead>{t("shoeDetail.movementTable.reason")}</TableHead>
+              <TableHead className="w-20">{t("shoeDetail.movementTable.user")}</TableHead>
+              <TableHead className="w-24">{t("shoeDetail.movementTable.date")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -40,7 +43,11 @@ export function StockMovementTable({ movements }: StockMovementTableProps) {
                       m.type === "in" ? "success" : m.type === "out" ? "destructive" : "warning"
                     }
                   >
-                    {m.type === "in" ? "IN" : m.type === "out" ? "OUT" : "ADJ"}
+                    {m.type === "in"
+                      ? t("shoeDetail.movementBadge.in")
+                      : m.type === "out"
+                        ? t("shoeDetail.movementBadge.out")
+                        : t("shoeDetail.movementBadge.adjustment")}
                   </Badge>
                 </TableCell>
                 <TableCell>

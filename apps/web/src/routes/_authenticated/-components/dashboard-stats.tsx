@@ -1,4 +1,5 @@
 import { AlertTriangle, DollarSign, Package, Warehouse } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface DashboardStatsProps {
@@ -14,11 +15,13 @@ export function DashboardStats({
   inventoryValue,
   lowStockCount,
 }: DashboardStatsProps) {
+  const { t } = useTranslation();
+
   const stats = [
-    { icon: <Package className="size-8 text-blue-500" />, value: totalModels, label: "Shoe Models" },
-    { icon: <Warehouse className="size-8 text-green-500" />, value: totalUnits.toLocaleString(), label: "Units in Stock" },
-    { icon: <DollarSign className="size-8 text-yellow-500" />, value: `$${inventoryValue.toLocaleString()}`, label: "Inventory Value" },
-    { icon: <AlertTriangle className="size-8 text-red-500" />, value: lowStockCount, label: "Low Stock Alerts" },
+    { icon: <Package className="size-8 text-blue-500" />, value: totalModels, label: t("dashboard.stats.shoeModels") },
+    { icon: <Warehouse className="size-8 text-green-500" />, value: totalUnits.toLocaleString(), label: t("dashboard.stats.unitsInStock") },
+    { icon: <DollarSign className="size-8 text-yellow-500" />, value: `$${inventoryValue.toLocaleString()}`, label: t("dashboard.stats.inventoryValue") },
+    { icon: <AlertTriangle className="size-8 text-red-500" />, value: lowStockCount, label: t("dashboard.stats.lowStockAlerts") },
   ];
 
   return (

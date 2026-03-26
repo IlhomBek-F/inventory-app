@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ export function ShoeTableRow({ shoe, onDelete }: ShoeTableRowProps) {
   const isOut = shoe.quantity === 0;
   const isLow = shoe.quantity <= shoe.minStockAlert;
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <>
@@ -37,7 +39,7 @@ export function ShoeTableRow({ shoe, onDelete }: ShoeTableRowProps) {
         <TableCell className="text-right">${shoe.sellPrice}</TableCell>
         <TableCell>
           <Badge variant={isOut ? "destructive" : isLow ? "warning" : "success"}>
-            {isOut ? "Out" : isLow ? `Low (${shoe.quantity})` : shoe.quantity}
+            {isOut ? t("shoes.stock.out") : isLow ? t("shoes.stock.low", { count: shoe.quantity }) : shoe.quantity}
           </Badge>
         </TableCell>
         <TableCell>
@@ -62,14 +64,14 @@ export function ShoeTableRow({ shoe, onDelete }: ShoeTableRowProps) {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete shoe</DialogTitle>
+            <DialogTitle>{t("shoeDetail.deleteDialog.title")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete <span className="font-medium text-foreground">{shoe.name}</span>? This action cannot be undone.
+              {t("shoeDetail.deleteDialog.description", { name: shoe.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -78,7 +80,7 @@ export function ShoeTableRow({ shoe, onDelete }: ShoeTableRowProps) {
                 onDelete(shoe);
               }}
             >
-              Delete
+              {t("common.delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

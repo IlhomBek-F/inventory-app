@@ -1,5 +1,6 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableBody,
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_authenticated/shoes/")({
 function ShoesListPage() {
   const { items: shoes } = Route.useLoaderData();
   const router = useRouter();
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortAsc, setSortAsc] = useState(true);
@@ -59,28 +61,20 @@ function ShoesListPage() {
 
   const exportCSV = () => {
     const headers = [
-      "Name",
-      "Brand",
-      "Category",
-      "Size",
-      "Color",
-      "SKU",
-      "Cost",
-      "Price",
-      "Qty",
+      t("shoes.columns.name"),
+      t("shoes.columns.brand"),
+      t("shoes.columns.category"),
+      t("shoes.columns.size"),
+      t("shoes.columns.color"),
+      t("shoes.columns.sku"),
+      t("shoes.columns.cost"),
+      t("shoes.columns.price"),
+      t("common.quantity"),
       "Condition",
     ];
     const rows = shoes.map((s) => [
-      s.name,
-      s.brand,
-      s.category,
-      s.size,
-      s.color,
-      s.sku,
-      s.costPrice,
-      s.sellPrice,
-      s.quantity,
-      s.condition,
+      s.name, s.brand, s.category, s.size, s.color,
+      s.sku, s.costPrice, s.sellPrice, s.quantity, s.condition,
     ]);
     const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
@@ -94,7 +88,7 @@ function ShoesListPage() {
 
   return (
     <div className="flex flex-col gap-3 max-w-6xl mx-auto">
-      <h1 className="text-lg font-bold">Shoe Inventory</h1>
+      <h1 className="text-lg font-bold">{t("shoes.title")}</h1>
 
       <ShoesToolbar search={search} onSearchChange={setSearch} onExportCSV={exportCSV} />
 
@@ -102,37 +96,23 @@ function ShoesListPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>
-                <SortHeader label="Name" field="name" onSort={toggleSort} />
-              </TableHead>
-              <TableHead>
-                <SortHeader label="Brand" field="brand" onSort={toggleSort} />
-              </TableHead>
-              <TableHead>
-                <SortHeader label="Category" field="category" onSort={toggleSort} />
-              </TableHead>
-              <TableHead>
-                <SortHeader label="Size" field="size" onSort={toggleSort} />
-              </TableHead>
-              <TableHead>Color</TableHead>
-              <TableHead>SKU</TableHead>
-              <TableHead className="text-right">
-                <SortHeader label="Cost" field="costPrice" onSort={toggleSort} />
-              </TableHead>
-              <TableHead className="text-right">
-                <SortHeader label="Price" field="sellPrice" onSort={toggleSort} />
-              </TableHead>
-              <TableHead>
-                <SortHeader label="Stock" field="quantity" onSort={toggleSort} />
-              </TableHead>
-              <TableHead className="w-24">Actions</TableHead>
+              <TableHead><SortHeader label={t("shoes.columns.name")} field="name" onSort={toggleSort} /></TableHead>
+              <TableHead><SortHeader label={t("shoes.columns.brand")} field="brand" onSort={toggleSort} /></TableHead>
+              <TableHead><SortHeader label={t("shoes.columns.category")} field="category" onSort={toggleSort} /></TableHead>
+              <TableHead><SortHeader label={t("shoes.columns.size")} field="size" onSort={toggleSort} /></TableHead>
+              <TableHead>{t("shoes.columns.color")}</TableHead>
+              <TableHead>{t("shoes.columns.sku")}</TableHead>
+              <TableHead className="text-right"><SortHeader label={t("shoes.columns.cost")} field="costPrice" onSort={toggleSort} /></TableHead>
+              <TableHead className="text-right"><SortHeader label={t("shoes.columns.price")} field="sellPrice" onSort={toggleSort} /></TableHead>
+              <TableHead><SortHeader label={t("shoes.columns.stock")} field="quantity" onSort={toggleSort} /></TableHead>
+              <TableHead className="w-24">{t("shoes.columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={10} className="text-center text-muted-foreground py-6">
-                  No shoes found.
+                  {t("shoes.noResults")}
                 </TableCell>
               </TableRow>
             ) : (

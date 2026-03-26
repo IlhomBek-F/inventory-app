@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Loader2, Save, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,17 +63,17 @@ export default function ShoeForm({
   initialData,
   onSubmit,
   loading,
-  submitLabel = "Save",
+  submitLabel,
 }: ShoeFormProps) {
+  const { t } = useTranslation();
+
   const form = useForm({
     defaultValues: { ...emptyShoe, ...initialData } as ShoeFormData,
-    validators: {
-      onChange: shoeSchema,
-    },
-    onSubmit: ({ value }) => {
-      onSubmit(value);
-    },
+    validators: { onChange: shoeSchema },
+    onSubmit: ({ value }) => { onSubmit(value); },
   });
+
+  const required = " *";
 
   return (
     <form
@@ -86,13 +87,8 @@ export default function ShoeForm({
       <form.Field name="name">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Name *</Label>
-            <Input
-              id="name"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+            <Label htmlFor="name">{t("shoeForm.fields.name")}{required}</Label>
+            <Input id="name" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
             {field.state.meta.errors.length > 0 && (
               <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>
             )}
@@ -103,13 +99,8 @@ export default function ShoeForm({
       <form.Field name="brand">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="brand">Brand *</Label>
-            <Input
-              id="brand"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+            <Label htmlFor="brand">{t("shoeForm.fields.brand")}{required}</Label>
+            <Input id="brand" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
             {field.state.meta.errors.length > 0 && (
               <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>
             )}
@@ -120,16 +111,14 @@ export default function ShoeForm({
       <form.Field name="category">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>Category *</Label>
+            <Label>{t("shoeForm.fields.category")}{required}</Label>
             <Select value={field.state.value} onValueChange={(v) => field.handleChange(v)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select category" />
+                <SelectValue placeholder={t("shoeForm.placeholders.selectCategory")} />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -143,16 +132,14 @@ export default function ShoeForm({
       <form.Field name="size">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>Size *</Label>
+            <Label>{t("shoeForm.fields.size")}{required}</Label>
             <Select value={field.state.value} onValueChange={(v) => field.handleChange(v)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select size" />
+                <SelectValue placeholder={t("shoeForm.placeholders.selectSize")} />
               </SelectTrigger>
               <SelectContent>
                 {sizes.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -166,13 +153,8 @@ export default function ShoeForm({
       <form.Field name="color">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="color">Color</Label>
-            <Input
-              id="color"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+            <Label htmlFor="color">{t("shoeForm.fields.color")}</Label>
+            <Input id="color" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
           </div>
         )}
       </form.Field>
@@ -180,16 +162,12 @@ export default function ShoeForm({
       <form.Field name="condition">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label>Condition</Label>
+            <Label>{t("shoeForm.fields.condition")}</Label>
             <Select value={field.state.value} onValueChange={(v) => field.handleChange(v)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {conditions.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -200,13 +178,8 @@ export default function ShoeForm({
       <form.Field name="sku">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="sku">SKU</Label>
-            <Input
-              id="sku"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+            <Label htmlFor="sku">{t("shoeForm.fields.sku")}</Label>
+            <Input id="sku" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
           </div>
         )}
       </form.Field>
@@ -214,13 +187,8 @@ export default function ShoeForm({
       <form.Field name="barcode">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="barcode">Barcode</Label>
-            <Input
-              id="barcode"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+            <Label htmlFor="barcode">{t("shoeForm.fields.barcode")}</Label>
+            <Input id="barcode" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
           </div>
         )}
       </form.Field>
@@ -228,16 +196,8 @@ export default function ShoeForm({
       <form.Field name="costPrice">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="costPrice">Cost Price *</Label>
-            <Input
-              id="costPrice"
-              type="number"
-              min={0}
-              step={0.01}
-              value={field.state.value || ""}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-            />
+            <Label htmlFor="costPrice">{t("shoeForm.fields.costPrice")}{required}</Label>
+            <Input id="costPrice" type="number" min={0} step={0.01} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
             {field.state.meta.errors.length > 0 && (
               <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>
             )}
@@ -248,16 +208,8 @@ export default function ShoeForm({
       <form.Field name="sellPrice">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="sellPrice">Sell Price *</Label>
-            <Input
-              id="sellPrice"
-              type="number"
-              min={0}
-              step={0.01}
-              value={field.state.value || ""}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-            />
+            <Label htmlFor="sellPrice">{t("shoeForm.fields.sellPrice")}{required}</Label>
+            <Input id="sellPrice" type="number" min={0} step={0.01} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
             {field.state.meta.errors.length > 0 && (
               <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>
             )}
@@ -268,15 +220,8 @@ export default function ShoeForm({
       <form.Field name="quantity">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="quantity">Quantity *</Label>
-            <Input
-              id="quantity"
-              type="number"
-              min={0}
-              value={field.state.value || ""}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-            />
+            <Label htmlFor="quantity">{t("shoeForm.fields.quantity")}{required}</Label>
+            <Input id="quantity" type="number" min={0} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
             {field.state.meta.errors.length > 0 && (
               <p className="text-xs text-destructive">{field.state.meta.errors[0]?.message}</p>
             )}
@@ -287,15 +232,8 @@ export default function ShoeForm({
       <form.Field name="minStockAlert">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="minStockAlert">Min Stock Alert</Label>
-            <Input
-              id="minStockAlert"
-              type="number"
-              min={0}
-              value={field.state.value || ""}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(Number(e.target.value))}
-            />
+            <Label htmlFor="minStockAlert">{t("shoeForm.fields.minStockAlert")}</Label>
+            <Input id="minStockAlert" type="number" min={0} value={field.state.value || ""} onBlur={field.handleBlur} onChange={(e) => field.handleChange(Number(e.target.value))} />
           </div>
         )}
       </form.Field>
@@ -303,13 +241,8 @@ export default function ShoeForm({
       <form.Field name="supplier">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="supplier">Supplier</Label>
-            <Input
-              id="supplier"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+            <Label htmlFor="supplier">{t("shoeForm.fields.supplier")}</Label>
+            <Input id="supplier" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
           </div>
         )}
       </form.Field>
@@ -317,13 +250,8 @@ export default function ShoeForm({
       <form.Field name="location">
         {(field) => (
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="location">Warehouse / Location</Label>
-            <Input
-              id="location"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+            <Label htmlFor="location">{t("shoeForm.fields.location")}</Label>
+            <Input id="location" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} />
           </div>
         )}
       </form.Field>
@@ -331,14 +259,8 @@ export default function ShoeForm({
       <form.Field name="description">
         {(field) => (
           <div className="flex flex-col gap-1.5 md:col-span-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              rows={3}
-            />
+            <Label htmlFor="description">{t("shoeForm.fields.description")}</Label>
+            <Textarea id="description" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} rows={3} />
           </div>
         )}
       </form.Field>
@@ -346,20 +268,10 @@ export default function ShoeForm({
       <form.Field name="imageUrl">
         {(field) => (
           <div className="flex flex-col gap-1.5 md:col-span-2">
-            <Label htmlFor="imageUrl">Image URL</Label>
-            <Input
-              id="imageUrl"
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder="https://..."
-            />
+            <Label htmlFor="imageUrl">{t("shoeForm.fields.imageUrl")}</Label>
+            <Input id="imageUrl" value={field.state.value} onBlur={field.handleBlur} onChange={(e) => field.handleChange(e.target.value)} placeholder="https://..." />
             {field.state.value && (
-              <img
-                src={field.state.value}
-                alt="shoe"
-                className="w-24 h-24 object-cover rounded mt-1"
-              />
+              <img src={field.state.value} alt="shoe" className="w-24 h-24 object-cover rounded mt-1" />
             )}
           </div>
         )}
@@ -369,18 +281,14 @@ export default function ShoeForm({
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <Button type="submit" size="sm" disabled={!canSubmit || loading || isSubmitting}>
-              {loading ? (
-                <Loader2 className="size-3.5 animate-spin" />
-              ) : (
-                <Save className="size-3.5" />
-              )}
-              {submitLabel}
+              {loading ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
+              {submitLabel ?? t("shoeForm.save")}
             </Button>
           )}
         </form.Subscribe>
         <Button type="button" variant="outline" size="sm" onClick={() => history.back()}>
           <X className="size-3.5" />
-          Cancel
+          {t("shoeForm.cancel")}
         </Button>
       </div>
     </form>

@@ -1,5 +1,7 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { BarChart2, LayoutDashboard, Loader2, LogOut, Package, User, Warehouse } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
@@ -31,6 +33,7 @@ function AuthPending() {
 function AuthenticatedLayout() {
   const { session } = Route.useRouteContext();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -56,7 +59,7 @@ function AuthenticatedLayout() {
                     className="h-8 text-xs"
                   >
                     <LayoutDashboard className="size-3.5" />
-                    Dashboard
+                    {t("nav.dashboard")}
                   </Button>
                 )}
               </Link>
@@ -68,7 +71,7 @@ function AuthenticatedLayout() {
                     className="h-8 text-xs"
                   >
                     <Package className="size-3.5" />
-                    Inventory
+                    {t("nav.inventory")}
                   </Button>
                 )}
               </Link>
@@ -80,7 +83,7 @@ function AuthenticatedLayout() {
                     className="h-8 text-xs"
                   >
                     <BarChart2 className="size-3.5" />
-                    Reports
+                    {t("nav.reports")}
                   </Button>
                 )}
               </Link>
@@ -96,9 +99,10 @@ function AuthenticatedLayout() {
                 {session.user.name || session.user.email}
               </span>
             </div>
+            <LanguageSwitcher />
             <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={handleSignOut}>
               <LogOut className="size-3.5" />
-              <span className="hidden sm:inline">Sign out</span>
+              <span className="hidden sm:inline">{t("nav.signOut")}</span>
             </Button>
           </div>
         </div>
