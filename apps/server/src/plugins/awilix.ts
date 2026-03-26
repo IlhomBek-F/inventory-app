@@ -3,6 +3,7 @@ import { asFunction, Lifetime } from "awilix";
 import fp from "fastify-plugin";
 import { auth } from "@/auth";
 import { db } from "@/db";
+import { OrderService } from "@/services/order.service";
 import { ShoeService } from "@/services/shoe.service";
 import { StockMovementService } from "@/services/stock-movement.service";
 
@@ -24,6 +25,9 @@ export default fp(async (fastify) => {
       lifetime: Lifetime.SINGLETON,
     }),
     stockMovementService: asFunction(() => new StockMovementService(db), {
+      lifetime: Lifetime.SINGLETON,
+    }),
+    orderService: asFunction(() => new OrderService(db), {
       lifetime: Lifetime.SINGLETON,
     }),
   });

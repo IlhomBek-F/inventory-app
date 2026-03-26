@@ -1,6 +1,9 @@
 import type {
   DashboardResponseType,
   ListShoesResponseType,
+  OrderBodyType,
+  OrderListResponseType,
+  OrderResponseType,
   ReportsResponseType,
   ShoeBodyType,
   ShoeResponseType,
@@ -38,6 +41,9 @@ export type DashboardData = DashboardResponseType;
 export type ReportsData = ReportsResponseType;
 export type StockMovement = StockMovementListItemType;
 export type StockMovementResult = StockMovementResponseType;
+export type Order = OrderResponseType;
+export type OrderListResponse = OrderListResponseType;
+export type OrderBody = OrderBodyType;
 
 // ── API ──
 
@@ -94,6 +100,20 @@ export const api = {
   dashboard: {
     get() {
       return request<DashboardResponseType>("/shoes/dashboard");
+    },
+  },
+
+  orders: {
+    list() {
+      return request<OrderListResponseType>("/orders");
+    },
+
+    get(id: string) {
+      return request<OrderResponseType>(`/orders/${encodeURIComponent(id)}`);
+    },
+
+    create(data: OrderBodyType) {
+      return request<OrderResponseType>("/orders", { method: "POST", body: JSON.stringify(data) });
     },
   },
 };

@@ -108,12 +108,61 @@ export const StockMovementListItem = Type.Object({
   quantity: Type.Integer(),
   reason: Type.Union([Type.String(), Type.Null()]),
   userId: Type.String(),
+  userName: Type.String(),
   createdAt: Type.String({ format: "date-time" }),
 });
 
 export const MovementListQuery = Type.Object({
   limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100, default: 50 })),
   offset: Type.Optional(Type.Integer({ minimum: 0, default: 0 })),
+});
+
+// ── Orders ──
+
+export const OrderBody = Type.Object({
+  type: Type.Union([Type.Literal("sale"), Type.Literal("purchase")]),
+  customerOrSupplier: Type.Optional(Type.String()),
+  notes: Type.Optional(Type.String()),
+  items: Type.Array(
+    Type.Object({
+      shoeId: Type.String(),
+      quantity: Type.Integer({ minimum: 1 }),
+    }),
+    { minItems: 1 },
+  ),
+});
+
+export const OrderItem = Type.Object({
+  id: Type.String(),
+  shoeId: Type.String(),
+  shoeName: Type.String(),
+  shoeBrand: Type.String(),
+  quantity: Type.Integer(),
+});
+
+export const OrderResponse = Type.Object({
+  id: Type.String(),
+  userId: Type.String(),
+  type: Type.String(),
+  customerOrSupplier: Type.Union([Type.String(), Type.Null()]),
+  notes: Type.Union([Type.String(), Type.Null()]),
+  createdAt: Type.String({ format: "date-time" }),
+  items: Type.Array(OrderItem),
+});
+
+export const OrderListItem = Type.Object({
+  id: Type.String(),
+  type: Type.String(),
+  customerOrSupplier: Type.Union([Type.String(), Type.Null()]),
+  notes: Type.Union([Type.String(), Type.Null()]),
+  createdAt: Type.String({ format: "date-time" }),
+  itemCount: Type.Integer(),
+  totalQuantity: Type.Integer(),
+});
+
+export const OrderListResponse = Type.Object({
+  items: Type.Array(OrderListItem),
+  total: Type.Number(),
 });
 
 // ── Reports ──

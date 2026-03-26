@@ -2,6 +2,25 @@ import { relations } from "drizzle-orm";
 import { index, integer, numeric, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
+export const orderTypeEnum = pgEnum("order_type", ["sale", "purchase"]);
+
+export const order = pgTable(
+  "order",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: orderTypeEnum("type").notNull(),
+    customerOrSupplier: text("customer_or_supplier").default(""),
+    notes: text("notes").default(""),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("order_userId_idx").on(table.userId)],
+);
+
 export const shoe = pgTable(
   "shoe",
   {
@@ -59,6 +78,7 @@ export const stockMovement = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    orderId: text("order_id").references(() => order.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
@@ -84,4 +104,16 @@ export const stockMovementRelations = relations(stockMovement, ({ one }) => ({
     fields: [stockMovement.userId],
     references: [user.id],
   }),
+  order: one(order, {
+    fields: [stockMovement.orderId],
+    references: [order.id],
+  }),
+}));
+
+export const orderRelations = relations(order, ({ one, many }) => ({
+  user: one(user, {
+    fields: [order.userId],
+    references: [user.id],
+  }),
+  movements: many(stockMovement),
 }));

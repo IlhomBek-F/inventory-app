@@ -15,9 +15,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedShoesIndexRouteImport } from './routes/_authenticated/shoes/index'
+import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders/index'
 import { Route as AuthRegisterIndexRouteImport } from './routes/_auth/register/index'
 import { Route as AuthLoginIndexRouteImport } from './routes/_auth/login/index'
 import { Route as AuthenticatedShoesNewRouteImport } from './routes/_authenticated/shoes/new'
+import { Route as AuthenticatedOrdersNewRouteImport } from './routes/_authenticated/orders/new'
 import { Route as AuthenticatedShoesShoeIdIndexRouteImport } from './routes/_authenticated/shoes/$shoeId/index'
 import { Route as AuthenticatedShoesShoeIdEditRouteImport } from './routes/_authenticated/shoes/$shoeId/edit'
 
@@ -49,6 +51,12 @@ const AuthenticatedShoesIndexRoute = AuthenticatedShoesIndexRouteImport.update({
   path: '/shoes/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedOrdersIndexRoute =
+  AuthenticatedOrdersIndexRouteImport.update({
+    id: '/orders/',
+    path: '/orders/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthRegisterIndexRoute = AuthRegisterIndexRouteImport.update({
   id: '/register/',
   path: '/register/',
@@ -62,6 +70,11 @@ const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
 const AuthenticatedShoesNewRoute = AuthenticatedShoesNewRouteImport.update({
   id: '/shoes/new',
   path: '/shoes/new',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedOrdersNewRoute = AuthenticatedOrdersNewRouteImport.update({
+  id: '/orders/new',
+  path: '/orders/new',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedShoesShoeIdIndexRoute =
@@ -81,9 +94,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/orders/new': typeof AuthenticatedOrdersNewRoute
   '/shoes/new': typeof AuthenticatedShoesNewRoute
   '/login/': typeof AuthLoginIndexRoute
   '/register/': typeof AuthRegisterIndexRoute
+  '/orders/': typeof AuthenticatedOrdersIndexRoute
   '/shoes/': typeof AuthenticatedShoesIndexRoute
   '/shoes/$shoeId/edit': typeof AuthenticatedShoesShoeIdEditRoute
   '/shoes/$shoeId/': typeof AuthenticatedShoesShoeIdIndexRoute
@@ -92,9 +107,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/orders/new': typeof AuthenticatedOrdersNewRoute
   '/shoes/new': typeof AuthenticatedShoesNewRoute
   '/login': typeof AuthLoginIndexRoute
   '/register': typeof AuthRegisterIndexRoute
+  '/orders': typeof AuthenticatedOrdersIndexRoute
   '/shoes': typeof AuthenticatedShoesIndexRoute
   '/shoes/$shoeId/edit': typeof AuthenticatedShoesShoeIdEditRoute
   '/shoes/$shoeId': typeof AuthenticatedShoesShoeIdIndexRoute
@@ -106,9 +123,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/orders/new': typeof AuthenticatedOrdersNewRoute
   '/_authenticated/shoes/new': typeof AuthenticatedShoesNewRoute
   '/_auth/login/': typeof AuthLoginIndexRoute
   '/_auth/register/': typeof AuthRegisterIndexRoute
+  '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
   '/_authenticated/shoes/': typeof AuthenticatedShoesIndexRoute
   '/_authenticated/shoes/$shoeId/edit': typeof AuthenticatedShoesShoeIdEditRoute
   '/_authenticated/shoes/$shoeId/': typeof AuthenticatedShoesShoeIdIndexRoute
@@ -119,9 +138,11 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/reports'
+    | '/orders/new'
     | '/shoes/new'
     | '/login/'
     | '/register/'
+    | '/orders/'
     | '/shoes/'
     | '/shoes/$shoeId/edit'
     | '/shoes/$shoeId/'
@@ -130,9 +151,11 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/reports'
+    | '/orders/new'
     | '/shoes/new'
     | '/login'
     | '/register'
+    | '/orders'
     | '/shoes'
     | '/shoes/$shoeId/edit'
     | '/shoes/$shoeId'
@@ -143,9 +166,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/_authenticated/dashboard'
     | '/_authenticated/reports'
+    | '/_authenticated/orders/new'
     | '/_authenticated/shoes/new'
     | '/_auth/login/'
     | '/_auth/register/'
+    | '/_authenticated/orders/'
     | '/_authenticated/shoes/'
     | '/_authenticated/shoes/$shoeId/edit'
     | '/_authenticated/shoes/$shoeId/'
@@ -201,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedShoesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/orders/': {
+      id: '/_authenticated/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof AuthenticatedOrdersIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_auth/register/': {
       id: '/_auth/register/'
       path: '/register'
@@ -220,6 +252,13 @@ declare module '@tanstack/react-router' {
       path: '/shoes/new'
       fullPath: '/shoes/new'
       preLoaderRoute: typeof AuthenticatedShoesNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/orders/new': {
+      id: '/_authenticated/orders/new'
+      path: '/orders/new'
+      fullPath: '/orders/new'
+      preLoaderRoute: typeof AuthenticatedOrdersNewRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/shoes/$shoeId/': {
@@ -254,7 +293,9 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedOrdersNewRoute: typeof AuthenticatedOrdersNewRoute
   AuthenticatedShoesNewRoute: typeof AuthenticatedShoesNewRoute
+  AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
   AuthenticatedShoesIndexRoute: typeof AuthenticatedShoesIndexRoute
   AuthenticatedShoesShoeIdEditRoute: typeof AuthenticatedShoesShoeIdEditRoute
   AuthenticatedShoesShoeIdIndexRoute: typeof AuthenticatedShoesShoeIdIndexRoute
@@ -263,7 +304,9 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedOrdersNewRoute: AuthenticatedOrdersNewRoute,
   AuthenticatedShoesNewRoute: AuthenticatedShoesNewRoute,
+  AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,
   AuthenticatedShoesIndexRoute: AuthenticatedShoesIndexRoute,
   AuthenticatedShoesShoeIdEditRoute: AuthenticatedShoesShoeIdEditRoute,
   AuthenticatedShoesShoeIdIndexRoute: AuthenticatedShoesShoeIdIndexRoute,

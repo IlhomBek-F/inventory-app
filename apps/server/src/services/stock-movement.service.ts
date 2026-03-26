@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, sql } from "drizzle-orm";
 import type { db as Database } from "@/db";
-import { shoe, stockMovement } from "@/db/schema";
+import { shoe, stockMovement, user } from "@/db/schema";
 
 type Db = typeof Database;
 
@@ -55,8 +55,18 @@ export class StockMovementService {
 
   async listByShoe(shoeId: string, userId: string, limit = 50, offset = 0) {
     return this.db
-      .select()
+      .select({
+        id: stockMovement.id,
+        shoeId: stockMovement.shoeId,
+        type: stockMovement.type,
+        quantity: stockMovement.quantity,
+        reason: stockMovement.reason,
+        userId: stockMovement.userId,
+        userName: user.name,
+        createdAt: stockMovement.createdAt,
+      })
       .from(stockMovement)
+      .innerJoin(user, eq(stockMovement.userId, user.id))
       .where(and(eq(stockMovement.shoeId, shoeId), eq(stockMovement.userId, userId)))
       .orderBy(desc(stockMovement.createdAt))
       .limit(limit)

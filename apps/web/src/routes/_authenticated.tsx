@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
-import { BarChart2, LayoutDashboard, Loader2, LogOut, Package, User, Warehouse } from "lucide-react";
+import { BarChart2, LayoutDashboard, Loader2, LogOut, Package, ShoppingCart, User, Warehouse } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
@@ -84,6 +84,18 @@ function AuthenticatedLayout() {
                   >
                     <BarChart2 className="size-3.5" />
                     {t("nav.reports")}
+                  </Button>
+                )}
+              </Link>
+              <Link to="/orders">
+                {({ isActive }) => (
+                  <Button
+                    variant={isActive ? "secondary" : "ghost"}
+                    size="sm"
+                    className="h-8 text-xs"
+                  >
+                    <ShoppingCart className="size-3.5" />
+                    {t("nav.orders")}
                   </Button>
                 )}
               </Link>

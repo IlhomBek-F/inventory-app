@@ -57,7 +57,7 @@ export function StockMovementTable({ movements }: StockMovementTableProps) {
                   </span>
                 </TableCell>
                 <TableCell>{m.reason}</TableCell>
-                <TableCell>{m.userId}</TableCell>
+                <TableCell>{m.userName}</TableCell>
                 <TableCell>{new Date(m.createdAt).toLocaleDateString()}</TableCell>
               </TableRow>
             ))}
