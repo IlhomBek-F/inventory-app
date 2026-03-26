@@ -1,4 +1,4 @@
-import { and, eq, ilike, or, sql } from "drizzle-orm";
+import { and, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import type { db as Database } from "@/db";
 import { shoe } from "@/db/schema";
 
@@ -38,7 +38,7 @@ export class ShoeService {
   constructor(private db: Db) {}
 
   async list({ userId, search, sortBy, sortOrder, limit = 50, offset = 0 }: ListShoesParams) {
-    const conditions = [eq(shoe.userId, userId)];
+    const conditions = [eq(shoe.userId, userId), isNull(shoe.deletedAt)];
 
     if (search) {
       const searchCondition = or(
@@ -81,7 +81,7 @@ export class ShoeService {
     const result = await this.db
       .select()
       .from(shoe)
-      .where(and(eq(shoe.id, id), eq(shoe.userId, userId)));
+      .where(and(eq(shoe.id, id), eq(shoe.userId, userId), isNull(shoe.deletedAt)));
 
     return result[0] ?? null;
   }
@@ -109,7 +109,7 @@ export class ShoeService {
         ...(costPrice !== undefined && { costPrice: String(costPrice) }),
         ...(sellPrice !== undefined && { sellPrice: String(sellPrice) }),
       })
-      .where(and(eq(shoe.id, id), eq(shoe.userId, userId)))
+      .where(and(eq(shoe.id, id), eq(shoe.userId, userId), isNull(shoe.deletedAt)))
       .returning();
 
     return result[0] ?? null;
@@ -117,8 +117,9 @@ export class ShoeService {
 
   async delete(id: string, userId: string) {
     const result = await this.db
-      .delete(shoe)
-      .where(and(eq(shoe.id, id), eq(shoe.userId, userId)))
+      .update(shoe)
+      .set({ deletedAt: new Date() })
+      .where(and(eq(shoe.id, id), eq(shoe.userId, userId), isNull(shoe.deletedAt)))
       .returning();
 
     return result[0] ?? null;
@@ -133,7 +134,7 @@ export class ShoeService {
         lowStockCount: sql<number>`count(*) filter (where ${shoe.quantity} <= ${shoe.minStockAlert})`,
       })
       .from(shoe)
-      .where(eq(shoe.userId, userId));
+      .where(and(eq(shoe.userId, userId), isNull(shoe.deletedAt)));
 
     return stats[0];
   }
@@ -142,7 +143,7 @@ export class ShoeService {
     return this.db
       .select()
       .from(shoe)
-      .where(and(eq(shoe.userId, userId), sql`${shoe.quantity} <= ${shoe.minStockAlert}`))
+      .where(and(eq(shoe.userId, userId), isNull(shoe.deletedAt), sql`${shoe.quantity} <= ${shoe.minStockAlert}`))
       .orderBy(shoe.quantity)
       .limit(limit);
   }

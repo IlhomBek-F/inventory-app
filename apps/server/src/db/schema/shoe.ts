@@ -32,6 +32,7 @@ export const shoe = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date())
       .notNull(),
+    deletedAt: timestamp("deleted_at"),
   },
   (table) => [
     index("shoe_userId_idx").on(table.userId),
