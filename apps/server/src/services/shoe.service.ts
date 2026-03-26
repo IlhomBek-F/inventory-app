@@ -139,6 +139,43 @@ export class ShoeService {
     return stats[0];
   }
 
+  async getReportData(userId: string) {
+    const [byCategory, byBrand, statusCounts] = await Promise.all([
+      this.db
+        .select({
+          category: shoe.category,
+          quantity: sql<number>`cast(sum(${shoe.quantity}) as int)`,
+        })
+        .from(shoe)
+        .where(and(eq(shoe.userId, userId), isNull(shoe.deletedAt)))
+        .groupBy(shoe.category),
+
+      this.db
+        .select({
+          brand: shoe.brand,
+          value: sql<number>`cast(sum(${shoe.quantity} * ${shoe.costPrice}::numeric) as float)`,
+        })
+        .from(shoe)
+        .where(and(eq(shoe.userId, userId), isNull(shoe.deletedAt)))
+        .groupBy(shoe.brand),
+
+      this.db
+        .select({
+          inStock: sql<number>`cast(count(*) filter (where ${shoe.quantity} > ${shoe.minStockAlert}) as int)`,
+          lowStock: sql<number>`cast(count(*) filter (where ${shoe.quantity} > 0 and ${shoe.quantity} <= ${shoe.minStockAlert}) as int)`,
+          outOfStock: sql<number>`cast(count(*) filter (where ${shoe.quantity} = 0) as int)`,
+        })
+        .from(shoe)
+        .where(and(eq(shoe.userId, userId), isNull(shoe.deletedAt))),
+    ]);
+
+    return {
+      stockByCategory: byCategory,
+      valueByBrand: byBrand,
+      stockStatus: statusCounts[0] ?? { inStock: 0, lowStock: 0, outOfStock: 0 },
+    };
+  }
+
   async getLowStockItems(userId: string, limit = 10) {
     return this.db
       .select()

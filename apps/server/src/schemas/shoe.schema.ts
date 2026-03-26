@@ -6,6 +6,7 @@ export {
   ListShoesQuery,
   ListShoesResponse,
   MovementListQuery,
+  ReportsResponse,
   ShoeBody,
   ShoeResponse,
   ShoeUpdateBody,

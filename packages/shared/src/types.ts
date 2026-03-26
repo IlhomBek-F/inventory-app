@@ -6,6 +6,7 @@ import type {
   ListShoesResponse,
   MovementListQuery,
   PaginationQuery,
+  ReportsResponse,
   ShoeBody,
   ShoeResponse,
   ShoeUpdateBody,
@@ -26,3 +27,4 @@ export type StockMovementResponseType = Static<typeof StockMovementResponse>;
 export type StockMovementListItemType = Static<typeof StockMovementListItem>;
 export type MovementListQueryType = Static<typeof MovementListQuery>;
 export type DashboardResponseType = Static<typeof DashboardResponse>;
+export type ReportsResponseType = Static<typeof ReportsResponse>;

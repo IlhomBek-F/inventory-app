@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx drizzle-kit:*)"
+      "Bash(npx drizzle-kit:*)",
+      "Bash(npm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(find /c/Users/Ilhomjon.tursunov/Desktop/inventory-app -path */better-auth/package.json -not -path */node_modules/*/node_modules/*)",
+      "Bash(find /c/Users/Ilhomjon.tursunov/Desktop/inventory-app -path */.pnpm/better-auth*/dist/crypto*)"
     ]
   }
 }

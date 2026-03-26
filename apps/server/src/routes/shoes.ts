@@ -10,6 +10,7 @@ import {
   ListShoesResponse,
   MovementListQuery,
   type MovementListQueryType,
+  ReportsResponse,
   ShoeBody,
   type ShoeBodyType,
   ShoeResponse,
@@ -70,6 +71,23 @@ const shoeRoutes: FastifyPluginAsync = async (fastify) => {
       ]);
 
       return { stats, lowStock, recentMovements };
+    },
+  );
+
+  // GET /shoes/reports - Report data for charts
+  fastify.get(
+    "/shoes/reports",
+    { schema: { response: { 200: ReportsResponse } } },
+    async (request) => {
+      const { shoeService, stockMovementService } = request.diScope.cradle;
+      const userId = getUserId(request);
+
+      const [reportData, movementTrends] = await Promise.all([
+        shoeService.getReportData(userId),
+        stockMovementService.getMovementTrends(userId),
+      ]);
+
+      return { ...reportData, movementTrends };
     },
   );
 

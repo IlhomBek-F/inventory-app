@@ -1,6 +1,7 @@
 import type {
   DashboardResponseType,
   ListShoesResponseType,
+  ReportsResponseType,
   ShoeBodyType,
   ShoeResponseType,
   ShoeUpdateBodyType,
@@ -34,6 +35,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export type Shoe = ShoeResponseType;
 export type ListShoesResponse = ListShoesResponseType;
 export type DashboardData = DashboardResponseType;
+export type ReportsData = ReportsResponseType;
 export type StockMovement = StockMovementListItemType;
 export type StockMovementResult = StockMovementResponseType;
 
@@ -80,6 +82,12 @@ export const api = {
 
     getMovements(id: string) {
       return request<StockMovementListItemType[]>(`/shoes/${encodeURIComponent(id)}/movements`);
+    },
+  },
+
+  reports: {
+    get() {
+      return request<ReportsResponseType>("/shoes/reports");
     },
   },
 

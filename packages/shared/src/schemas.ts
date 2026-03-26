@@ -116,6 +116,25 @@ export const MovementListQuery = Type.Object({
   offset: Type.Optional(Type.Integer({ minimum: 0, default: 0 })),
 });
 
+// ── Reports ──
+
+export const ReportsResponse = Type.Object({
+  stockByCategory: Type.Array(
+    Type.Object({ category: Type.String(), quantity: Type.Number() }),
+  ),
+  valueByBrand: Type.Array(
+    Type.Object({ brand: Type.String(), value: Type.Number() }),
+  ),
+  stockStatus: Type.Object({
+    inStock: Type.Number(),
+    lowStock: Type.Number(),
+    outOfStock: Type.Number(),
+  }),
+  movementTrends: Type.Array(
+    Type.Object({ date: Type.String(), in: Type.Number(), out: Type.Number() }),
+  ),
+});
+
 // ── Dashboard ──
 
 export const DashboardResponse = Type.Object({

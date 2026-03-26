@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte, sql } from "drizzle-orm";
 import type { db as Database } from "@/db";
 import { shoe, stockMovement } from "@/db/schema";
 
@@ -61,6 +61,36 @@ export class StockMovementService {
       .orderBy(desc(stockMovement.createdAt))
       .limit(limit)
       .offset(offset);
+  }
+
+  async getMovementTrends(userId: string, days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const rows = await this.db
+      .select({
+        date: sql<string>`to_char(date_trunc('day', ${stockMovement.createdAt}), 'YYYY-MM-DD')`,
+        type: stockMovement.type,
+        total: sql<number>`cast(sum(${stockMovement.quantity}) as int)`,
+      })
+      .from(stockMovement)
+      .where(and(eq(stockMovement.userId, userId), gte(stockMovement.createdAt, since)))
+      .groupBy(
+        sql`date_trunc('day', ${stockMovement.createdAt})`,
+        stockMovement.type,
+      )
+      .orderBy(sql`date_trunc('day', ${stockMovement.createdAt})`);
+
+    const byDate = new Map<string, { date: string; in: number; out: number }>();
+    for (const row of rows) {
+      if (!byDate.has(row.date)) byDate.set(row.date, { date: row.date, in: 0, out: 0 });
+      const entry = byDate.get(row.date);
+      if (!entry) continue;
+      if (row.type === "in") entry.in += row.total;
+      else if (row.type === "out") entry.out += row.total;
+    }
+
+    return Array.from(byDate.values());
   }
 
   async getRecent(userId: string, limit = 10) {
